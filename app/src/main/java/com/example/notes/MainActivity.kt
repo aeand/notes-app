@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 
 /* TODO
 - bug: moving files. drop boxes seem incorrect
+- fix hitbox for trash bin
 */
 
 class MainActivity : ComponentActivity() {
@@ -38,23 +39,26 @@ class MainActivity : ComponentActivity() {
         val bottomBar = 48f
 
         setContent {
-            Box(modifier = Modifier.fillMaxSize().background(Color.Black))
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+                    .padding(top = topBar.dp, bottom = bottomBar.dp)
+            ) {
+                Notes(
+                    getFiles = fileManager::getFiles,
+                    saveFile = fileManager::saveFile,
+                    saveFileOverride = fileManager::overrideFile,
+                    readFile = fileManager::readFile,
+                    saveFolder = fileManager::saveFolder,
+                    moveFile = fileManager::moveFile,
+                    deleteFiles = fileManager::deleteFile,
+                    rootFolderName = fileManager.rootFolderName,
+                    rootPath = fileManager.root,
+                )
 
-            Notes(
-                Modifier
-                    .padding(top = topBar.dp, bottom = bottomBar.dp),
-                getFiles = fileManager::getFiles,
-                saveFile = fileManager::saveFile,
-                saveFileOverride = fileManager::overrideFile,
-                readFile = fileManager::readFile,
-                saveFolder = fileManager::saveFolder,
-                moveFile = fileManager::moveFile,
-                deleteFiles = fileManager::deleteFile,
-                rootFolderName = fileManager.rootFolderName,
-                rootPath = fileManager.root,
-            )
-
-            Directory()
+                Directory()
+            }
         }
     }
 

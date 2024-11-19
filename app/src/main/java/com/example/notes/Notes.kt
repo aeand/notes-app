@@ -66,7 +66,6 @@ import java.io.File
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Notes(
-    modifier: Modifier,
     getFiles: () -> MutableList<FileManager.CustomFile>,
     saveFile: (name: String, path: String, content: String) -> Boolean,
     saveFileOverride: (name: String, path: String, content: String) -> Unit,
@@ -166,7 +165,7 @@ fun Notes(
     }
 
     Box(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
     ) {
         val focusManager = LocalFocusManager.current

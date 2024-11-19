@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 /* TODO
-- add app logo
 - add splash screen
 - open dir menu in a new way
 */

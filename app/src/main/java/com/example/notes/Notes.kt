@@ -504,7 +504,11 @@ fun Notes(
                                                 } else if (file.file.isDirectory) {
                                                     if (hiddenItems.find { it == file.file.path } != null) {
                                                         hiddenItems.remove(file.file.path)
-                                                        file.children?.forEach { it.hidden = false }
+                                                        file.file.listFiles()?.forEach { i ->
+                                                            val f = files.find { j -> i.path == j.file.path }
+                                                            if (f != null)
+                                                                f.hidden = false
+                                                        }
                                                     }
                                                     else {
                                                         hiddenItems.add(file.file.path)

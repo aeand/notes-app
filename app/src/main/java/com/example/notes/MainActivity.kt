@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 
 /* TODO
-- bug: moving files. drop boxes seem incorrect
 - fix hitbox for trash bin
 */
 

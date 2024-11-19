@@ -171,12 +171,6 @@ fun Notes(
         val focusManager = LocalFocusManager.current
         val focusRequester = remember { FocusRequester() }
 
-        /*LaunchedEffect(enabled.value) {
-            focusManager.clearFocus()
-            textFieldFocused.value = false
-            showDirMenu.value = false
-        }*/
-
         val customTextSelectionColors = TextSelectionColors(
             handleColor = Color.Gray,
             backgroundColor = Color.DarkGray
@@ -209,7 +203,7 @@ fun Notes(
                     0.75f to Color.Black,
                     1.00f to Color.Black,
                 ),
-                /*enabled = enabled.value,*/
+                enabled = !showDirMenu.value,
                 textStyle = TextStyle(
                     textAlign = TextAlign.Start,
                     fontFamily = Typography.titleMedium.fontFamily,
@@ -285,7 +279,7 @@ fun Notes(
                     0.75f to Color.Black,
                     1.00f to Color.Black,
                 ),
-                /*enabled = enabled.value,*/
+                enabled = !showDirMenu.value,
                 textStyle = TextStyle(
                     textAlign = TextAlign.Start,
                     fontFamily = Typography.titleMedium.fontFamily,

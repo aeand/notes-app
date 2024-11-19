@@ -94,7 +94,10 @@ fun Notes(
 
     LaunchedEffect(files.size == 0) {
         if (files.size == 0) {
-            getFiles().forEach { files.add(it) }
+            getFiles().forEach {
+                if (it.file.exists())
+                    files.add(it)
+            }
             files.forEach { file ->
                 val previousFile = previousFiles.find { prevFile -> prevFile.file.path == file.file.path }
                 file.hidden = previousFile?.hidden ?: false

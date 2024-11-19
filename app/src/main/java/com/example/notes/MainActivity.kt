@@ -1,6 +1,10 @@
 package com.example.notes
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -15,12 +19,14 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 
 /* TODO
-- bug: save crashed app
+- bug: moving files. drop boxes seem incorrect
 */
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        requestPermissions()
 
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(Color.Transparent.toArgb()),
@@ -50,5 +56,16 @@ class MainActivity : ComponentActivity() {
 
             Directory()
         }
+    }
+
+    private fun requestPermissions() {
+        if (Environment.isExternalStorageManager()) {
+            return
+        }
+
+        val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).also {
+            it.data = Uri.parse("package:${packageName}")
+        }
+        startActivity(intent)
     }
 }

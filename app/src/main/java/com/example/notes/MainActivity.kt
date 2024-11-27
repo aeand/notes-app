@@ -21,11 +21,9 @@ import androidx.compose.ui.unit.dp
 /* TODO
 - check recompositions
 - enable delete multiple files
-- it needs to be clearer what each action does.
+- it needs to be clearer what each action does
 - when closing directory and opening again, the closed folder icon is not displayed correctly.
-- dont make app go edge to edge, that way keyboard padding wont make the text override statusbar
 - make me able to edit text behind keyboard. when i
-- change cursor colors i can view it with a black background
 */
 
 class MainActivity : ComponentActivity() {
@@ -34,21 +32,13 @@ class MainActivity : ComponentActivity() {
 
         requestPermissions()
 
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.dark(Color.Transparent.toArgb()),
-            navigationBarStyle = SystemBarStyle.dark(Color.Transparent.toArgb()),
-        )
-
         val fileManager = FileManager()
-        val topBar = 32f
-        val bottomBar = 48f
 
         setContent {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black)
-                    .padding(top = topBar.dp, bottom = bottomBar.dp)
             ) {
                 Notes(
                     getFiles = fileManager::getFiles,

@@ -20,10 +20,8 @@ import androidx.compose.ui.unit.dp
 
 /* TODO
 - check recompositions
-- enable delete multiple files
 - it needs to be clearer what each action does
-- when closing directory and opening again, the closed folder icon is not displayed correctly.
-- make me able to edit text behind keyboard. When text
+- make me able to edit text behind keyboard. When text is just not long enough to be scrollable and keyboard is in the way
 */
 
 class MainActivity : ComponentActivity() {

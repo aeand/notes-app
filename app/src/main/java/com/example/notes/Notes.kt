@@ -370,6 +370,8 @@ fun Notes(
             )
         }
 
+        val hiddenItems = remember { mutableListOf<String>() }
+
         if (showDirMenu.value) {
             val selectedItems = remember { mutableStateListOf<String>() }
 
@@ -465,8 +467,6 @@ fun Notes(
                         )
                     }
                 }
-
-                val hiddenItems = remember { mutableListOf<String>() }
 
                 LazyColumn(
                     modifier = Modifier

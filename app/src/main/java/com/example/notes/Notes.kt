@@ -215,7 +215,7 @@ fun Notes(
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.None,
                     autoCorrect = false,
-                    imeAction = ImeAction.Done
+                    imeAction = ImeAction.Unspecified,
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = {

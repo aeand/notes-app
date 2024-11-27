@@ -343,10 +343,13 @@ fun Notes(
                 .clickable {
                     focusManager.clearFocus()
                     textFieldFocused.value = false
-                    showSaveFileDialog.value = true
+
+                    if (text.value.isNotEmpty()) {
+                        showSaveFileDialog.value = true
+                    }
                 },
             text = "Save",
-            color = Color.White,
+            color = if (text.value.isEmpty()) Color.LightGray else Color.White,
             fontFamily = Typography.bodyLarge.fontFamily,
             fontSize = Typography.bodyLarge.fontSize,
             fontWeight = Typography.bodyLarge.fontWeight,

@@ -206,10 +206,10 @@ fun Notes(
                 enabled = !showDirMenu.value,
                 textStyle = TextStyle(
                     textAlign = TextAlign.Start,
-                    fontFamily = Typography.titleMedium.fontFamily,
-                    fontSize = Typography.titleMedium.fontSize,
-                    lineHeight = Typography.titleMedium.lineHeight,
-                    letterSpacing = Typography.titleMedium.letterSpacing,
+                    fontFamily = Typography.bodyLarge.fontFamily,
+                    fontSize = Typography.bodyLarge.fontSize,
+                    lineHeight = Typography.bodyLarge.lineHeight,
+                    letterSpacing = Typography.bodyLarge.letterSpacing,
                     color = Color.White,
                 ),
                 keyboardOptions = KeyboardOptions(
@@ -238,9 +238,9 @@ fun Notes(
                                 text = "Write something",
                                 textAlign = TextAlign.Left,
                                 fontFamily = FontFamily(Font(R.font.roboto_italic)),
-                                fontSize = Typography.titleMedium.fontSize,
-                                fontWeight = Typography.titleMedium.fontWeight,
-                                lineHeight = Typography.titleMedium.lineHeight,
+                                fontSize = Typography.bodyLarge.fontSize,
+                                fontWeight = Typography.bodyLarge.fontWeight,
+                                lineHeight = Typography.bodyLarge.lineHeight,
                                 color = Color.Gray
                             )
                         } else {

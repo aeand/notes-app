@@ -23,12 +23,12 @@ import androidx.compose.ui.unit.dp
 - enable delete multiple files
 - it needs to be clearer what each action does.
 - i need to be able to write newline. back button closes keyboard. so i dont need the done button
--when closing directory and opening again, the closed folder icon is not displayed correctly.
--kinda want a smaller font size.
--Gray out and disable save button when text and title are empty.
--dont make app go edge to edge, that way keyboard padding wont make the text override statusbar
--make me able to edit text behind keyboard. when i 
-- change cursor colorso i can view it with a black background
+- when closing directory and opening again, the closed folder icon is not displayed correctly.
+- kinda want a smaller font size.
+- Gray out and disable save button when text and title are empty.
+- dont make app go edge to edge, that way keyboard padding wont make the text override statusbar
+- make me able to edit text behind keyboard. when i
+- change cursor colors i can view it with a black background
 */
 
 class MainActivity : ComponentActivity() {

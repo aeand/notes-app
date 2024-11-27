@@ -257,6 +257,21 @@ class FileManager {
         }
     }
 
+    fun deleteFiles(list: List<CustomFile>) {
+        list.forEach { file ->
+            try {
+                if (file.file.isFile) {
+                    file.file.delete()
+                }
+                else if (file.file.isDirectory) {
+                    file.file.deleteRecursively()
+                }
+            } catch (e: Exception) {
+                println("error: delete file failure $e")
+            }
+        }
+    }
+
     fun getFiles(path: String = ""): MutableList<CustomFile> {
         val files = File(root, path).listFiles()
         val directoryLevel = path.count { it == '/' } + 1

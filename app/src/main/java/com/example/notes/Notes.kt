@@ -72,7 +72,7 @@ fun Notes(
     readFile: (file: File) -> String,
     saveFolder: (name: String, path: String) -> Unit,
     moveFile: (sourceFilePaths: String, targetFile: FileManager.CustomFile) -> Unit,
-    deleteFiles: (sourceFile: FileManager.CustomFile) -> Unit,
+    deleteFiles: (list: List<FileManager.CustomFile>) -> Unit,
     rootFolderName: String,
     rootPath: String,
 ) {
@@ -595,7 +595,16 @@ fun Notes(
                                     selectedItems.forEach {
                                         val file = files.find { file -> file.file.path == it }
                                         if (file != null) {
-                                            deleteFiles(file)
+                                            val list = mutableListOf<FileManager.CustomFile>()
+
+                                            selectedItems.forEach { path ->
+                                                val f = files.find { f -> f.file.path == path }
+                                                if (f != null) {
+                                                    list.add(f)
+                                                }
+                                            }
+
+                                            deleteFiles(list)
                                             files.forEach { previousFiles.add(it) }
                                             files.clear()
                                         }

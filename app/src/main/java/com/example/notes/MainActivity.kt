@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 - enable delete multiple files
 - it needs to be clearer what each action does
 - when closing directory and opening again, the closed folder icon is not displayed correctly.
-- make me able to edit text behind keyboard. when i
+- make me able to edit text behind keyboard. When text
 */
 
 class MainActivity : ComponentActivity() {
@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
                     readFile = fileManager::readFile,
                     saveFolder = fileManager::saveFolder,
                     moveFile = fileManager::moveFile,
-                    deleteFiles = fileManager::deleteFile,
+                    deleteFiles = fileManager::deleteFiles,
                     rootFolderName = fileManager.rootFolderName,
                     rootPath = fileManager.root,
                 )

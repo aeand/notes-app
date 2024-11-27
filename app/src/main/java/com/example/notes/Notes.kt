@@ -196,12 +196,12 @@ fun Notes(
                     text.value = it
                 },
                 cursorBrush = Brush.verticalGradient(
-                    0.00f to Color.Black,
-                    0.15f to Color.Black,
-                    0.15f to Color.Black,
-                    0.75f to Color.Black,
-                    0.75f to Color.Black,
-                    1.00f to Color.Black,
+                    0.00f to Color.White,
+                    0.15f to Color.White,
+                    0.15f to Color.White,
+                    0.75f to Color.White,
+                    0.75f to Color.White,
+                    1.00f to Color.White,
                 ),
                 enabled = !showDirMenu.value,
                 textStyle = TextStyle(
@@ -272,12 +272,12 @@ fun Notes(
                     title.value = it
                 },
                 cursorBrush = Brush.verticalGradient(
-                    0.00f to Color.Black,
-                    0.15f to Color.Black,
-                    0.15f to Color.Black,
-                    0.75f to Color.Black,
-                    0.75f to Color.Black,
-                    1.00f to Color.Black,
+                    0.00f to Color.White,
+                    0.15f to Color.White,
+                    0.15f to Color.White,
+                    0.75f to Color.White,
+                    0.75f to Color.White,
+                    1.00f to Color.White,
                 ),
                 enabled = !showDirMenu.value,
                 textStyle = TextStyle(

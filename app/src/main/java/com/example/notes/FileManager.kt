@@ -1,9 +1,11 @@
 package com.example.notes
 
+import android.content.Context
+import android.widget.Toast
 import java.io.File
 import java.io.FileInputStream
 
-class FileManager {
+class FileManager(private val applicationContext: Context) {
     class CustomFile(
         val file: File,
         val children: MutableList<CustomFile>?,
@@ -11,11 +13,24 @@ class FileManager {
         var hidden: Boolean,
     )
 
+    class FileContent(
+        var title: String,
+        var path: String,
+        var content: String,
+    )
+
     val rootFolderName = "Notes"
     val root = "/storage/emulated/0/${rootFolderName}"
+    var files = mutableListOf<CustomFile>()
+    var previousFiles = mutableListOf<CustomFile>()
+    var currentFile = FileContent("", "", "")
 
-    fun saveFolder(name: String, path: String = "") {
-        val folder = File(root, path + name)
+    fun autoSave(content: String) {
+        saveFile("tmpfileforautosave", "", content)
+    }
+
+    fun saveFolder(title: String, path: String = "") {
+        val folder = File(root, path + title)
 
         if (!folder.exists()) {
             if (!folder.mkdir()) {
@@ -24,32 +39,39 @@ class FileManager {
                 folder.mkdirs()
             }
         }
+        Toast.makeText(applicationContext, "folder saved", Toast.LENGTH_SHORT).show()
     }
 
-    fun overrideFile(name: String, folder: String, content: String) {
-        val letDirectory = File(root, folder)
+    fun overrideFile(title: String, path: String, content: String) {
+        val letDirectory = File(root, path)
         letDirectory.mkdirs()
-        val file = File(letDirectory, "$name.txt")
+        val file = File(letDirectory, "$title.txt")
         file.writeText(content)
+        Toast.makeText(applicationContext, "file overridden", Toast.LENGTH_SHORT).show()
     }
 
-    fun saveFile(name: String, folder: String = "", content: String): Boolean {
-        val letDirectory = File(root, folder)
+    fun saveFile(title: String, path: String = "", content: String): Boolean {
+        val letDirectory = File(root, path)
         letDirectory.mkdirs()
-        val file = File(letDirectory, "$name.txt")
+        val file = File(letDirectory, "$title.txt")
         if (file.exists()) {
             return false
         }
 
         file.writeText(content)
+        Toast.makeText(applicationContext, "file saved", Toast.LENGTH_SHORT).show()
 
         return true
     }
 
     fun readFile(file: File): String {
-        return FileInputStream(file).bufferedReader().use {
+        val content = FileInputStream(file).bufferedReader().use {
             it.readText()
         }
+
+        Toast.makeText(applicationContext, "", Toast.LENGTH_SHORT).show()
+
+        return content
     }
 
     fun moveFile(sourceFilePaths: String, targetFile: CustomFile) {
@@ -58,15 +80,14 @@ class FileManager {
             sourceFilePaths.split("_-middle-_").forEach { path ->
                 pathList.add(path)
             }
-        }
-        else {
+        } else {
             pathList.add(sourceFilePaths)
         }
 
         val sourceFileList = mutableListOf<CustomFile>()
         pathList.forEach { path ->
             val file = getFiles().find { file ->
-                file.file.name == path.takeLastWhile { s -> s != '/' } &&  file.file.path == path
+                file.file.name == path.takeLastWhile { s -> s != '/' } && file.file.path == path
             }
             if (file != null) {
                 sourceFileList.add(file)
@@ -79,28 +100,47 @@ class FileManager {
                 return@forEach
             }
 
-            if (root == targetFile.file.path && targetFile.file.path == sourceFile.file.path.replace("/${sourceFile.file.name}", "")) {
+            if (root == targetFile.file.path && targetFile.file.path == sourceFile.file.path.replace(
+                    "/${sourceFile.file.name}",
+                    ""
+                )
+            ) {
                 println("error: file is already in root")
                 return@forEach
             }
 
             if (sourceFile.file.isFile) {
                 if (targetFile.file.isFile) {
-                    val targetFilePath = targetFile.file.path.replace("/${targetFile.file.name}", "")
+                    val targetFilePath =
+                        targetFile.file.path.replace("/${targetFile.file.name}", "")
 
                     if (sourceFile.file.name == targetFile.file.name) {
                         println("error: file with that name already exists")
                         return@forEach
                     }
 
-                    if (sourceFile.file.path.replace("/${sourceFile.file.name}", "") == targetFilePath) {
+                    if (sourceFile.file.path.replace(
+                            "/${sourceFile.file.name}",
+                            ""
+                        ) == targetFilePath
+                    ) {
                         println("error: file and file have the same path")
                         return@forEach
                     }
 
-                    val filesInPath = File(root, targetFile.file.path.replace(root, "").replace(targetFile.file.name, "")).listFiles()
+                    val filesInPath = File(
+                        root,
+                        targetFile.file.path.replace(root, "").replace(targetFile.file.name, "")
+                    ).listFiles()
                     if (filesInPath == null) {
-                        println("error: found no files in ${root + targetFile.file.path.replace(root, "").replace(targetFile.file.name, "")}")
+                        println(
+                            "error: found no files in ${
+                                root + targetFile.file.path.replace(
+                                    root,
+                                    ""
+                                ).replace(targetFile.file.name, "")
+                            }"
+                        )
                         return@forEach
                     }
 
@@ -114,8 +154,8 @@ class FileManager {
                     copyFile(sourceFile, "$targetFilePath/${sourceFile.file.name}")
                     if (canDeleteFile(sourceFile, targetFile, targetFile.file.path))
                         deleteFile(sourceFile)
-                }
-                else if (targetFile.file.isDirectory) {
+                    Toast.makeText(applicationContext, "moved file", Toast.LENGTH_SHORT).show()
+                } else if (targetFile.file.isDirectory) {
                     val listOfFilesInDir = targetFile.file.listFiles()
                     if (listOfFilesInDir != null) {
                         for (file in listOfFilesInDir) {
@@ -129,19 +169,29 @@ class FileManager {
                     copyFile(sourceFile, "${targetFile.file.path}/${sourceFile.file.name}")
                     if (canDeleteFile(sourceFile, targetFile, targetFile.file.path))
                         deleteFile(sourceFile)
-                }
-                else {
+                    Toast.makeText(applicationContext, "moved file", Toast.LENGTH_SHORT).show()
+                } else {
                     println("error: target file is not file or folder ${sourceFile.file.exists()} ${targetFile.file.exists()}")
                     return@forEach
                 }
-            }
-            else if (sourceFile.file.isDirectory) {
+            } else if (sourceFile.file.isDirectory) {
                 if (targetFile.file.isFile) {
-                    val targetFilePath = targetFile.file.path.replace("/${targetFile.file.name}", "")
+                    val targetFilePath =
+                        targetFile.file.path.replace("/${targetFile.file.name}", "")
 
-                    val filesInPath = File(root, targetFile.file.path.replace(root, "").replace(targetFile.file.name, "")).listFiles()
+                    val filesInPath = File(
+                        root,
+                        targetFile.file.path.replace(root, "").replace(targetFile.file.name, "")
+                    ).listFiles()
                     if (filesInPath == null) {
-                        println("error: found no files in ${root + targetFile.file.path.replace(root, "").replace(targetFile.file.name, "")}")
+                        println(
+                            "error: found no files in ${
+                                root + targetFile.file.path.replace(
+                                    root,
+                                    ""
+                                ).replace(targetFile.file.name, "")
+                            }"
+                        )
                         return@forEach
                     }
 
@@ -155,8 +205,8 @@ class FileManager {
                     copyFile(sourceFile, "$targetFilePath/${sourceFile.file.name}")
                     if (canDeleteFile(sourceFile, targetFile, targetFilePath))
                         deleteFile(sourceFile)
-                }
-                else if (targetFile.file.isDirectory) {
+                    Toast.makeText(applicationContext, "moved file", Toast.LENGTH_SHORT).show()
+                } else if (targetFile.file.isDirectory) {
                     if (targetFile.children != null) {
                         val children = targetFile.file.listFiles()
                         if (children != null) {
@@ -172,13 +222,12 @@ class FileManager {
                     copyFile(sourceFile, "${targetFile.file.path}/${sourceFile.file.name}")
                     if (canDeleteFile(sourceFile, targetFile, targetFile.file.path))
                         deleteFile(sourceFile)
-                }
-                else {
+                    Toast.makeText(applicationContext, "moved file", Toast.LENGTH_SHORT).show()
+                } else {
                     println("error: target file is not file or folder ${sourceFile.file.exists()} ${targetFile.file.exists()}")
                     return@forEach
                 }
-            }
-            else {
+            } else {
                 println("error: source file is not file or folder ${sourceFile.file.exists()} ${targetFile.file.exists()}")
                 return@forEach
             }
@@ -192,8 +241,7 @@ class FileManager {
             } catch (e: Exception) {
                 println("error: file copy failed $e")
             }
-        }
-        else if (file.file.isDirectory) {
+        } else if (file.file.isDirectory) {
             try {
                 file.file.copyRecursively(File(path))
             } catch (e: Exception) {
@@ -202,11 +250,14 @@ class FileManager {
         }
     }
 
-    private fun canDeleteFile(sourceFile: CustomFile, targetFile: CustomFile, targetPath: String): Boolean {
+    private fun canDeleteFile(
+        sourceFile: CustomFile,
+        targetFile: CustomFile,
+        targetPath: String
+    ): Boolean {
         if (sourceFile.file.isFile) {
             return sourceFile.file.exists() && File(targetPath + "/${sourceFile.file.name}").exists()
-        }
-        else if (sourceFile.file.isDirectory) {
+        } else if (sourceFile.file.isDirectory) {
             if (!sourceFile.file.exists() || !File(targetPath + "/${sourceFile.file.name}").exists()) {
                 println("error: source file and/or target file doesn't exist")
                 return false
@@ -219,7 +270,10 @@ class FileManager {
                     val relativePath = sourceChild.file.path.replace(sourceFile.file.path, "")
 
                     for (copiedChild in targetChildren) {
-                        val relativePath2 = copiedChild.file.path.replace("${targetFile.file.path}/${sourceFile.file.name}", "")
+                        val relativePath2 = copiedChild.file.path.replace(
+                            "${targetFile.file.path}/${sourceFile.file.name}",
+                            ""
+                        )
 
                         if (sourceChild.file.name == copiedChild.file.name && relativePath == relativePath2) {
                             foundCopy = true
@@ -234,27 +288,26 @@ class FileManager {
                 }
 
                 return true
-            }
-            else {
+            } else {
                 return sourceFile.file.exists() && File(targetPath + "/${sourceFile.file.name}").exists()
             }
-        }
-        else {
+        } else {
             return false
         }
     }
 
-    fun deleteFile(file: CustomFile){
+    fun deleteFile(file: CustomFile) {
         try {
             if (file.file.isFile) {
                 file.file.delete()
-            }
-            else if (file.file.isDirectory) {
+            } else if (file.file.isDirectory) {
                 file.file.deleteRecursively()
             }
         } catch (e: Exception) {
             println("error: delete file failure $e")
         }
+
+        Toast.makeText(applicationContext, "deleted file", Toast.LENGTH_SHORT).show()
     }
 
     fun deleteFiles(list: List<CustomFile>) {
@@ -262,14 +315,15 @@ class FileManager {
             try {
                 if (file.file.isFile) {
                     file.file.delete()
-                }
-                else if (file.file.isDirectory) {
+                } else if (file.file.isDirectory) {
                     file.file.deleteRecursively()
                 }
             } catch (e: Exception) {
                 println("error: delete file failure $e")
             }
         }
+
+        Toast.makeText(applicationContext, "deleted files", Toast.LENGTH_SHORT).show()
     }
 
     fun getFiles(path: String = ""): MutableList<CustomFile> {

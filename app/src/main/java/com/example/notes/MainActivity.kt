@@ -10,6 +10,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
@@ -34,8 +36,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         requestPermissions()
-
-        val fileManager = FileManager()
+        val fileManager = FileManager(this)
 
         setContent {
             Box(
@@ -43,8 +44,15 @@ class MainActivity : ComponentActivity() {
                     .fillMaxSize()
                     .background(Color.Black)
             ) {
-                Notes(fileManager)
-                Directory()
+                val showDir = remember { mutableStateOf(false) }
+                Notes(fileManager) {
+                    showDir.value = true
+                }
+                if (showDir.value) {
+                    Directory(fileManager) {
+                        showDir.value = false
+                    }
+                }
             }
         }
     }

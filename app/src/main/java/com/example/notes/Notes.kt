@@ -65,17 +65,7 @@ import java.io.File
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Notes(
-    getFiles: () -> MutableList<FileManager.CustomFile>,
-    saveFile: (name: String, path: String, content: String) -> Boolean,
-    saveFileOverride: (name: String, path: String, content: String) -> Unit,
-    readFile: (file: File) -> String,
-    saveFolder: (name: String, path: String) -> Unit,
-    moveFile: (sourceFilePaths: String, targetFile: FileManager.CustomFile) -> Unit,
-    deleteFiles: (list: List<FileManager.CustomFile>) -> Unit,
-    rootFolderName: String,
-    rootPath: String,
-) {
+fun Notes(fileManager: FileManager) {
     val interactionSource = remember { MutableInteractionSource() }
     val textFieldFocused = remember { mutableStateOf(false) }
 
@@ -93,7 +83,7 @@ fun Notes(
 
     LaunchedEffect(files.size == 0) {
         if (files.size == 0) {
-            getFiles().forEach {
+            fileManager.getFiles().forEach {
                 if (it.file.exists())
                     files.add(it)
             }
@@ -110,7 +100,7 @@ fun Notes(
         this.launch {
             delay(3000)
             if (text.value != "") {
-                saveFile("tmpfileforautosave", "", text.value)
+                fileManager.saveFile("tmpfileforautosave", "", text.value)
             }
         }
     }
@@ -119,7 +109,7 @@ fun Notes(
         DialogSaveFile(
             confirm = { name: String ->
                 if (name.isNotEmpty()) {
-                    if (!saveFile(name, path.value, text.value)) {
+                    if (!fileManager.saveFile(name, path.value, text.value)) {
                         showSaveFileOverrideDialog.value = true
                     }
 
@@ -138,7 +128,7 @@ fun Notes(
     if (showSaveFolderDialog.value) {
         DialogSaveFolder(
             confirm = { folderName: String ->
-                saveFolder(folderName, path.value)
+                fileManager.saveFolder(folderName, path.value)
                 files.forEach { previousFiles.add(it) }
                 files.clear()
                 showSaveFolderDialog.value = false
@@ -152,7 +142,7 @@ fun Notes(
     if (showSaveFileOverrideDialog.value) {
         DialogOverride(
             confirm = {
-                saveFileOverride(title.value, path.value, text.value)
+                fileManager.overrideFile(title.value, path.value, text.value)
                 files.forEach { previousFiles.add(it) }
                 files.clear()
                 showSaveFileOverrideDialog.value = false
@@ -390,10 +380,10 @@ fun Notes(
                         target = object: DragAndDropTarget {
                             override fun onDrop(event: DragAndDropEvent): Boolean {
                                 val draggedFilePath = event.toAndroidDragEvent().clipData?.getItemAt(0)?.text.toString()
-                                moveFile(
+                                fileManager.moveFile(
                                     draggedFilePath, FileManager.CustomFile(
                                         file = File(
-                                            rootPath,
+                                            fileManager.root,
                                             ""
                                         ),
                                         children = null,
@@ -414,7 +404,7 @@ fun Notes(
                         .fillMaxWidth()
                         .height(50.dp)
                         .padding(start = 5.dp),
-                    text = rootFolderName,
+                    text = fileManager.rootFolderName,
                     color = Color.White,
                     fontFamily = Typography.titleLarge.fontFamily,
                     fontSize = Typography.titleLarge.fontSize,
@@ -433,15 +423,15 @@ fun Notes(
                             .clickable {
                                 val file = files.find { it.file.nameWithoutExtension == title.value }
                                 if (text.value != "") {
-                                    if (file == null || readFile(file.file) != text.value) {
+                                    if (file == null || fileManager.readFile(file.file) != text.value) {
                                         showSaveFileDialog.value = true
                                     }
                                 }
                                 if (text.value == "" || !showSaveFileDialog.value) {
-                                    text.value = readFile(autoSaveFile.file)
+                                    text.value = fileManager.readFile(autoSaveFile.file)
                                     title.value = "tmpfileforautosave"
                                     path.value = autoSaveFile.file.path
-                                        .replace(rootPath, "")
+                                        .replace(fileManager.root, "")
                                         .replace(autoSaveFile.file.name, "")
                                     showDirMenu.value = false
                                 }
@@ -488,16 +478,16 @@ fun Notes(
                                                 } else if (file.file.isFile) {
                                                     if (text.value != "") {
                                                         val match = files.find { it.file.nameWithoutExtension == title.value }
-                                                        if (match == null || readFile(match.file) != text.value) {
+                                                        if (match == null || fileManager.readFile(match.file) != text.value) {
                                                             showSaveFileDialog.value = true
                                                         }
                                                     }
                                                     if (text.value == "" || !showSaveFileDialog.value) {
-                                                        text.value = readFile(file.file)
+                                                        text.value = fileManager.readFile(file.file)
                                                         title.value = file.file.nameWithoutExtension
                                                         showDirMenu.value = false
                                                         path.value = file.file.path
-                                                            .replace(rootPath, "")
+                                                            .replace(fileManager.root, "")
                                                             .replace(file.file.name, "")
                                                     }
                                                 } else if (file.file.isDirectory) {
@@ -545,7 +535,7 @@ fun Notes(
                                         },
                                         target = object: DragAndDropTarget {
                                             override fun onDrop(event: DragAndDropEvent): Boolean {
-                                                moveFile(event.toAndroidDragEvent().clipData?.getItemAt(0)?.text.toString(), file)
+                                                fileManager.moveFile(event.toAndroidDragEvent().clipData?.getItemAt(0)?.text.toString(), file)
                                                 selectedItems.clear()
                                                 files.forEach { previousFiles.add(it) }
                                                 files.clear()
@@ -604,7 +594,7 @@ fun Notes(
                                                 }
                                             }
 
-                                            deleteFiles(list)
+                                            fileManager.deleteFiles(list)
                                             files.forEach { previousFiles.add(it) }
                                             files.clear()
                                         }

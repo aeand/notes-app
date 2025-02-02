@@ -139,24 +139,25 @@ fun Directory(
                         .height(50.dp)
                         .clickable {
                             val file =
-                                fileManager.files.find { it.file.nameWithoutExtension == fileManager.currentFile.title }
-                            if (fileManager.currentFile.content != "") {
-                                if (file == null || fileManager.readFile(file.file) != fileManager.currentFile.content) {
+                                fileManager.files.find { it.file.nameWithoutExtension == fileManager.currentFile.value.title }
+                            if (fileManager.currentFile.value.content != "") {
+                                if (file == null) {
                                     fileManager.saveFile(
-                                        fileManager.currentFile.title,
+                                        fileManager.currentFile.value.title,
                                         "",
-                                        fileManager.currentFile.content
+                                        fileManager.currentFile.value.content,
+                                        true,
                                     )
                                 }
                             }
-                            if (fileManager.currentFile.content == "" /*|| !showSaveFileDialog.value*/) { //TODO -> find out what this did
-                                fileManager.currentFile.content =
-                                    fileManager.readFile(autoSaveFile.file)
-                                fileManager.currentFile.title = "tmpfileforautosave"
-                                fileManager.currentFile.path = autoSaveFile.file.path
-                                    .replace(fileManager.root, "")
-                                    .replace(autoSaveFile.file.name, "")
-                                //showDirMenu.value = false
+                            if (fileManager.currentFile.value.content == "" /*|| !showSaveFileDialog.value*/) { //TODO -> find out what this did
+                                fileManager.currentFile.value.title = "tmpfileforautosave"
+                                fileManager.currentFile.value.path =
+                                    autoSaveFile.file.path //TODO -> check if this path is ok. seems wrong
+                                        .replace(fileManager.root, "")
+                                        .replace(autoSaveFile.file.name, "")
+                                //fileManager.currentFile.value.content = fileManager.readFile(autoSaveFile.file)
+                                closeDir()
                             }
                         },
                 ) {
@@ -201,30 +202,8 @@ fun Directory(
                                                 )
                                                 else selectedItems.add(file.file.path)
                                             } else if (file.file.isFile) {
-                                                if (fileManager.currentFile.content != "") {
-                                                    val match =
-                                                        fileManager.files.find { it.file.nameWithoutExtension == fileManager.currentFile.content }
-                                                    if (match == null || fileManager.readFile(
-                                                            match.file
-                                                        ) != fileManager.currentFile.content
-                                                    ) {
-                                                        fileManager.saveFile(
-                                                            fileManager.currentFile.title,
-                                                            "",
-                                                            fileManager.currentFile.content
-                                                        )
-                                                    }
-                                                }
-                                                if (fileManager.currentFile.content == "" /*|| !showSaveFileDialog.value*/) {
-                                                    fileManager.currentFile.content =
-                                                        fileManager.readFile(file.file)
-                                                    fileManager.currentFile.content =
-                                                        file.file.nameWithoutExtension
-                                                    //showDirMenu.value = false
-                                                    fileManager.currentFile.path = file.file.path
-                                                        .replace(fileManager.root, "")
-                                                        .replace(file.file.name, "")
-                                                }
+                                                fileManager.readFile(file.file)
+                                                closeDir()
                                             } else if (file.file.isDirectory) {
                                                 if (hiddenItems.find { it == file.file.path } != null) {
                                                     hiddenItems.remove(file.file.path)
@@ -241,19 +220,9 @@ fun Directory(
                                                     file.children?.forEach { it.hidden = true }
                                                 }
 
-                                                fileManager.files.forEach {
-                                                    fileManager.previousFiles.add(
-                                                        it
-                                                    )
-                                                }
-                                                fileManager.files.clear()
+                                                fileManager.updateFiles()
                                             } else {
-                                                fileManager.files.forEach {
-                                                    fileManager.previousFiles.add(
-                                                        it
-                                                    )
-                                                }
-                                                fileManager.files.clear()
+                                                fileManager.updateFiles()
                                             }
                                         },
                                         onLongPress = {
@@ -291,12 +260,7 @@ fun Directory(
                                                 )?.text.toString(), file
                                             )
                                             selectedItems.clear()
-                                            fileManager.files.forEach {
-                                                fileManager.previousFiles.add(
-                                                    it
-                                                )
-                                            }
-                                            fileManager.files.clear()
+                                            fileManager.updateFiles()
 
                                             return true
                                         }
@@ -374,9 +338,9 @@ fun Directory(
                         modifier = Modifier
                             .size(50.dp)
                             .clickable {
-                                fileManager.currentFile.content = ""
-                                fileManager.currentFile.title = ""
-                                fileManager.currentFile.path = ""
+                                fileManager.currentFile.value.content = ""
+                                fileManager.currentFile.value.title = ""
+                                fileManager.currentFile.value.path = ""
                                 closeDir()
                             },
                         painter = painterResource(R.drawable.plus),
@@ -388,8 +352,7 @@ fun Directory(
                         modifier = Modifier
                             .size(50.dp)
                             .clickable {
-                                fileManager.saveFolder(fileManager.currentFile.title)
-                                closeDir()
+                                fileManager.saveFolder(fileManager.currentFile.value.title)
                             },
                         painter = painterResource(R.drawable.folder),
                         contentDescription = null,

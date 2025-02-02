@@ -2,6 +2,7 @@ package com.example.notes
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.runtime.mutableStateOf
 import java.io.File
 import java.io.FileInputStream
 
@@ -23,10 +24,23 @@ class FileManager(private val applicationContext: Context) {
     val root = "/storage/emulated/0/${rootFolderName}"
     var files = mutableListOf<CustomFile>()
     var previousFiles = mutableListOf<CustomFile>()
-    var currentFile = FileContent("", "", "")
+    var currentFile = mutableStateOf(FileContent("", "", ""))
+
+    init {
+        files = getFiles("")
+    }
+
+    fun updateFiles() {
+        files.forEach {
+            previousFiles.add(
+                it
+            )
+        }
+        files.clear()
+    }
 
     fun autoSave(content: String) {
-        saveFile("tmpfileforautosave", "", content)
+        saveFile("tmpfileforautosave", "", content, false)
     }
 
     fun saveFolder(title: String, path: String = "") {
@@ -34,44 +48,56 @@ class FileManager(private val applicationContext: Context) {
 
         if (!folder.exists()) {
             if (!folder.mkdir()) {
-                println("error: Cannot create a directory!")
+                Toast.makeText(
+                    applicationContext,
+                    "e: Cannot create a directory",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 folder.mkdirs()
             }
         }
+
         Toast.makeText(applicationContext, "folder saved", Toast.LENGTH_SHORT).show()
     }
 
-    fun overrideFile(title: String, path: String, content: String) {
-        val letDirectory = File(root, path)
-        letDirectory.mkdirs()
-        val file = File(letDirectory, "$title.txt")
-        file.writeText(content)
-        Toast.makeText(applicationContext, "file overridden", Toast.LENGTH_SHORT).show()
-    }
-
-    fun saveFile(title: String, path: String = "", content: String): Boolean {
-        val letDirectory = File(root, path)
-        letDirectory.mkdirs()
-        val file = File(letDirectory, "$title.txt")
-        if (file.exists()) {
-            return false
+    fun saveFile(title: String, path: String = "", content: String, showToast: Boolean) {
+        if (title.isEmpty() || content.isEmpty()) {
+            return
         }
 
-        file.writeText(content)
-        Toast.makeText(applicationContext, "file saved", Toast.LENGTH_SHORT).show()
+        val letDirectory = File(root, path)
+        letDirectory.mkdirs()
+        val file = File(letDirectory, "$title.txt")
 
-        return true
+        file.writeText(content)
+
+        currentFile.value.title = title
+        currentFile.value.path = path
+        currentFile.value.content = content
+
+        if (showToast) {
+            Toast.makeText(applicationContext, "file saved", Toast.LENGTH_SHORT).show()
+        }
+
+        return
     }
 
-    fun readFile(file: File): String {
+    fun readFile(file: File) {
+        val match = files.find { it.file.nameWithoutExtension == file.nameWithoutExtension }
+        if (match == null) {
+            Toast.makeText(applicationContext, "file not found", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val content = FileInputStream(file).bufferedReader().use {
             it.readText()
         }
+        println(content)
 
-        Toast.makeText(applicationContext, "", Toast.LENGTH_SHORT).show()
-
-        return content
+        currentFile.value.title = file.nameWithoutExtension
+        currentFile.value.path = file.path.replace(root, "")
+        currentFile.value.content = content
     }
 
     fun moveFile(sourceFilePaths: String, targetFile: CustomFile) {
@@ -96,6 +122,11 @@ class FileManager(private val applicationContext: Context) {
 
         sourceFileList.forEach { sourceFile ->
             if (sourceFile.file.path == targetFile.file.path) {
+                Toast.makeText(
+                    applicationContext,
+                    "error: file is targeting the source file",
+                    Toast.LENGTH_SHORT
+                ).show()
                 println("error: file is targeting the source file")
                 return@forEach
             }
@@ -105,6 +136,11 @@ class FileManager(private val applicationContext: Context) {
                     ""
                 )
             ) {
+                Toast.makeText(
+                    applicationContext,
+                    "error: file is already in root",
+                    Toast.LENGTH_SHORT
+                ).show()
                 println("error: file is already in root")
                 return@forEach
             }
@@ -115,6 +151,11 @@ class FileManager(private val applicationContext: Context) {
                         targetFile.file.path.replace("/${targetFile.file.name}", "")
 
                     if (sourceFile.file.name == targetFile.file.name) {
+                        Toast.makeText(
+                            applicationContext,
+                            "error: file with that name already exists",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         println("error: file with that name already exists")
                         return@forEach
                     }
@@ -124,6 +165,11 @@ class FileManager(private val applicationContext: Context) {
                             ""
                         ) == targetFilePath
                     ) {
+                        Toast.makeText(
+                            applicationContext,
+                            "error: file and file have the same path",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         println("error: file and file have the same path")
                         return@forEach
                     }
@@ -133,6 +179,14 @@ class FileManager(private val applicationContext: Context) {
                         targetFile.file.path.replace(root, "").replace(targetFile.file.name, "")
                     ).listFiles()
                     if (filesInPath == null) {
+                        Toast.makeText(
+                            applicationContext, "error: found no files in ${
+                                root + targetFile.file.path.replace(
+                                    root,
+                                    ""
+                                ).replace(targetFile.file.name, "")
+                            }", Toast.LENGTH_SHORT
+                        ).show()
                         println(
                             "error: found no files in ${
                                 root + targetFile.file.path.replace(
@@ -146,6 +200,11 @@ class FileManager(private val applicationContext: Context) {
 
                     for (file in filesInPath) {
                         if (sourceFile.file.name == file.name && file.isFile) {
+                            Toast.makeText(
+                                applicationContext,
+                                "error: path has file with the same name as source",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             println("error: path has file with the same name as source")
                             return@forEach
                         }
@@ -160,6 +219,11 @@ class FileManager(private val applicationContext: Context) {
                     if (listOfFilesInDir != null) {
                         for (file in listOfFilesInDir) {
                             if (sourceFile.file.name == file.name && file.isFile) {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "error: found file with same name as source file",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 println("error: found file with same name as source file")
                                 return@forEach
                             }
@@ -171,6 +235,11 @@ class FileManager(private val applicationContext: Context) {
                         deleteFile(sourceFile)
                     Toast.makeText(applicationContext, "moved file", Toast.LENGTH_SHORT).show()
                 } else {
+                    Toast.makeText(
+                        applicationContext,
+                        "error: target file is not file or folder",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     println("error: target file is not file or folder ${sourceFile.file.exists()} ${targetFile.file.exists()}")
                     return@forEach
                 }
@@ -184,6 +253,14 @@ class FileManager(private val applicationContext: Context) {
                         targetFile.file.path.replace(root, "").replace(targetFile.file.name, "")
                     ).listFiles()
                     if (filesInPath == null) {
+                        Toast.makeText(
+                            applicationContext, "error: found no files in ${
+                                root + targetFile.file.path.replace(
+                                    root,
+                                    ""
+                                ).replace(targetFile.file.name, "")
+                            }", Toast.LENGTH_SHORT
+                        ).show()
                         println(
                             "error: found no files in ${
                                 root + targetFile.file.path.replace(
@@ -197,6 +274,11 @@ class FileManager(private val applicationContext: Context) {
 
                     for (file in filesInPath) {
                         if (sourceFile.file.name == file.name && file.isDirectory) {
+                            Toast.makeText(
+                                applicationContext,
+                                "error: path has folder with the same name as source",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             println("error: path has folder with the same name as source")
                             return@forEach
                         }
@@ -212,6 +294,11 @@ class FileManager(private val applicationContext: Context) {
                         if (children != null) {
                             for (file in children) {
                                 if (sourceFile.file.name == file.name && file.isDirectory) {
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "error: folder with that name already exists",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                     println("error: folder with that name already exists")
                                     return@forEach
                                 }
@@ -224,10 +311,20 @@ class FileManager(private val applicationContext: Context) {
                         deleteFile(sourceFile)
                     Toast.makeText(applicationContext, "moved file", Toast.LENGTH_SHORT).show()
                 } else {
+                    Toast.makeText(
+                        applicationContext,
+                        "error: target file is not file or folder",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     println("error: target file is not file or folder ${sourceFile.file.exists()} ${targetFile.file.exists()}")
                     return@forEach
                 }
             } else {
+                Toast.makeText(
+                    applicationContext,
+                    "error: source file is not file or folder",
+                    Toast.LENGTH_SHORT
+                ).show()
                 println("error: source file is not file or folder ${sourceFile.file.exists()} ${targetFile.file.exists()}")
                 return@forEach
             }
@@ -239,12 +336,19 @@ class FileManager(private val applicationContext: Context) {
             try {
                 file.file.copyTo(File(path))
             } catch (e: Exception) {
+                Toast.makeText(applicationContext, "error: file copy failed $e", Toast.LENGTH_SHORT)
+                    .show()
                 println("error: file copy failed $e")
             }
         } else if (file.file.isDirectory) {
             try {
                 file.file.copyRecursively(File(path))
             } catch (e: Exception) {
+                Toast.makeText(
+                    applicationContext,
+                    "error: folder copy failed $e",
+                    Toast.LENGTH_SHORT
+                ).show()
                 println("error: folder copy failed $e")
             }
         }
@@ -259,6 +363,11 @@ class FileManager(private val applicationContext: Context) {
             return sourceFile.file.exists() && File(targetPath + "/${sourceFile.file.name}").exists()
         } else if (sourceFile.file.isDirectory) {
             if (!sourceFile.file.exists() || !File(targetPath + "/${sourceFile.file.name}").exists()) {
+                Toast.makeText(
+                    applicationContext,
+                    "error: source file and/or target file doesn't exist",
+                    Toast.LENGTH_SHORT
+                ).show()
                 println("error: source file and/or target file doesn't exist")
                 return false
             }
@@ -282,6 +391,11 @@ class FileManager(private val applicationContext: Context) {
                     }
 
                     if (!foundCopy) {
+                        Toast.makeText(
+                            applicationContext,
+                            "error: didn't find corresponding child to: ${sourceChild.file.name}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         println("error: didn't find corresponding child to: ${sourceChild.file.name}")
                         return false
                     }
@@ -304,10 +418,10 @@ class FileManager(private val applicationContext: Context) {
                 file.file.deleteRecursively()
             }
         } catch (e: Exception) {
+            Toast.makeText(applicationContext, "error: delete file failure $e", Toast.LENGTH_SHORT)
+                .show()
             println("error: delete file failure $e")
         }
-
-        Toast.makeText(applicationContext, "deleted file", Toast.LENGTH_SHORT).show()
     }
 
     fun deleteFiles(list: List<CustomFile>) {
@@ -319,11 +433,14 @@ class FileManager(private val applicationContext: Context) {
                     file.file.deleteRecursively()
                 }
             } catch (e: Exception) {
+                Toast.makeText(
+                    applicationContext,
+                    "error: delete file failure $e",
+                    Toast.LENGTH_SHORT
+                ).show()
                 println("error: delete file failure $e")
             }
         }
-
-        Toast.makeText(applicationContext, "deleted files", Toast.LENGTH_SHORT).show()
     }
 
     fun getFiles(path: String = ""): MutableList<CustomFile> {

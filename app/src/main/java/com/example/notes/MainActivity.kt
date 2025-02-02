@@ -46,6 +46,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 val showDir = remember { mutableStateOf(false) }
                 Notes(fileManager) {
+                    //fileManager.updateFiles()
                     showDir.value = true
                 }
                 if (showDir.value) {

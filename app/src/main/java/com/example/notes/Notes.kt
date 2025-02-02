@@ -49,9 +49,20 @@ fun Notes(
 ) {
     val textFieldFocused = remember { mutableStateOf(false) }
 
-    val title = remember { mutableStateOf("") }
-    val path = remember { mutableStateOf("") }
-    val content = remember { mutableStateOf("") }
+    val title = remember { mutableStateOf(fileManager.currentFile.value.title) }
+    val path = remember { mutableStateOf(fileManager.currentFile.value.path) }
+    val content = remember { mutableStateOf(fileManager.currentFile.value.content) }
+
+    // UPDATE FIELDS
+    LaunchedEffect(
+        fileManager.currentFile.value.title,
+        fileManager.currentFile.value.path,
+        fileManager.currentFile.value.content
+    ) {
+        title.value = fileManager.currentFile.value.title
+        path.value = fileManager.currentFile.value.path
+        content.value = fileManager.currentFile.value.content
+    }
 
     // AUTOSAVE
     LaunchedEffect(content.value) {
@@ -243,7 +254,7 @@ fun Notes(
                     textFieldFocused.value = false
 
                     if (title.value.isNotEmpty() && content.value.isNotEmpty()) {
-                        fileManager.saveFile(title.value, "", content.value)
+                        fileManager.saveFile(title.value, "", content.value, true)
                     }
                 },
             text = "Save",
@@ -259,8 +270,11 @@ fun Notes(
                 .align(Alignment.BottomEnd)
                 .size(50.dp)
                 .clickable {
-                    fileManager.currentFile =
-                        FileManager.FileContent(title.value, path.value, content.value)
+                    fileManager.currentFile.value = FileManager.FileContent(
+                        title.value,
+                        path.value,
+                        content.value
+                    )
                     openDir()
                 },
             painter = painterResource(R.drawable.burger_menu),

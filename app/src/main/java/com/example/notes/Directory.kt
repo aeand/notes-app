@@ -25,7 +25,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -47,22 +46,7 @@ fun Directory(
     fileManager: FileManager,
     closeDir: () -> Unit,
 ) {
-    // RELOAD DIR
-    LaunchedEffect(fileManager.files.size == 0) {
-        if (fileManager.files.size == 0) {
-            fileManager.getFiles().forEach {
-                if (it.file.exists())
-                    fileManager.files.add(it)
-            }
-            fileManager.files.forEach { file ->
-                val previousFile =
-                    fileManager.previousFiles.find { prevFile -> prevFile.file.path == file.file.path }
-                file.hidden = previousFile?.hidden ?: false
-            }
-
-            fileManager.previousFiles.clear()
-        }
-    }
+    //TODO -> could try to launched effect that updates local files list
 
     Box(
         modifier = Modifier
@@ -73,16 +57,14 @@ fun Directory(
             }
     ) {
         val hiddenItems = remember { mutableListOf<String>() }
-
         val selectedItems = remember { mutableStateListOf<String>() }
-
         val interactionSource = remember { MutableInteractionSource() }
 
         Box(
             modifier = Modifier
                 .width(200.dp)
                 .fillMaxHeight()
-                .align(Alignment.BottomEnd) //TODO -> fix alignment issues
+                .align(Alignment.BottomEnd)
                 .clip(RoundedCornerShape(10.dp))
                 .background(Color.DarkGray)
                 .clickable(interactionSource = interactionSource, indication = null) {}
@@ -108,8 +90,7 @@ fun Directory(
                                 )
                             )
                             selectedItems.clear()
-                            fileManager.files.forEach { fileManager.previousFiles.add(it) }
-                            fileManager.files.clear()
+                            fileManager.updateFiles()
                             return true
                         }
                     }
@@ -128,58 +109,35 @@ fun Directory(
                 lineHeight = Typography.titleLarge.lineHeight,
             )
 
-            val autoSaveFile =
-                fileManager.files.find { it.file.nameWithoutExtension == "tmpfileforautosave" }
-            if (autoSaveFile != null) {
-                Row(
+            Row(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(top = 60.dp)
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .clickable {
+                        fileManager.openFile("tmpfileforautosave")
+                        closeDir()
+                    },
+            ) {
+                Icon(
                     modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(top = 60.dp)
-                        .fillMaxWidth()
-                        .height(50.dp)
-                        .clickable {
-                            val file =
-                                fileManager.files.find { it.file.nameWithoutExtension == fileManager.currentFile.value.title }
-                            if (fileManager.currentFile.value.content != "") {
-                                if (file == null) {
-                                    fileManager.saveFile(
-                                        fileManager.currentFile.value.title,
-                                        "",
-                                        fileManager.currentFile.value.content,
-                                        true,
-                                    )
-                                }
-                            }
-                            if (fileManager.currentFile.value.content == "" /*|| !showSaveFileDialog.value*/) { //TODO -> find out what this did
-                                fileManager.currentFile.value.title = "tmpfileforautosave"
-                                fileManager.currentFile.value.path =
-                                    autoSaveFile.file.path //TODO -> check if this path is ok. seems wrong
-                                        .replace(fileManager.root, "")
-                                        .replace(autoSaveFile.file.name, "")
-                                //fileManager.currentFile.value.content = fileManager.readFile(autoSaveFile.file)
-                                closeDir()
-                            }
-                        },
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .padding(start = 5.dp, top = 10.dp, bottom = 10.dp),
-                        painter = painterResource(R.drawable.file),
-                        contentDescription = null,
-                        tint = Color.Black,
-                    )
+                        .padding(start = 5.dp, top = 10.dp, bottom = 10.dp),
+                    painter = painterResource(R.drawable.file),
+                    contentDescription = null,
+                    tint = Color.Black,
+                )
 
-                    Text(
-                        modifier = Modifier
-                            .padding(start = 5.dp, top = 10.dp, bottom = 10.dp),
-                        text = "Auto save",
-                        color = Color.White,
-                        fontFamily = Typography.bodyLarge.fontFamily,
-                        fontSize = Typography.bodyLarge.fontSize,
-                        fontWeight = Typography.bodyLarge.fontWeight,
-                        lineHeight = Typography.bodyLarge.lineHeight,
-                    )
-                }
+                Text(
+                    modifier = Modifier
+                        .padding(start = 5.dp, top = 10.dp, bottom = 10.dp),
+                    text = "Auto save",
+                    color = Color.White,
+                    fontFamily = Typography.bodyLarge.fontFamily,
+                    fontSize = Typography.bodyLarge.fontSize,
+                    fontWeight = Typography.bodyLarge.fontWeight,
+                    lineHeight = Typography.bodyLarge.lineHeight,
+                )
             }
 
             LazyColumn(
@@ -202,7 +160,7 @@ fun Directory(
                                                 )
                                                 else selectedItems.add(file.file.path)
                                             } else if (file.file.isFile) {
-                                                fileManager.readFile(file.file)
+                                                fileManager.openFile(file.file.nameWithoutExtension)
                                                 closeDir()
                                             } else if (file.file.isDirectory) {
                                                 if (hiddenItems.find { it == file.file.path } != null) {
@@ -259,9 +217,8 @@ fun Directory(
                                                     0
                                                 )?.text.toString(), file
                                             )
-                                            selectedItems.clear()
-                                            fileManager.updateFiles()
 
+                                            selectedItems.clear()
                                             return true
                                         }
                                     }
@@ -323,8 +280,7 @@ fun Directory(
                                         }
 
                                         fileManager.deleteFiles(list)
-                                        fileManager.files.forEach { fileManager.previousFiles.add(it) }
-                                        fileManager.files.clear()
+                                        fileManager.updateFiles()
                                     }
                                 }
                                 selectedItems.clear()
@@ -336,11 +292,10 @@ fun Directory(
                 } else {
                     Icon(
                         modifier = Modifier
-                            .size(50.dp)
+                            .padding(5.dp)
+                            .size(42.dp)
                             .clickable {
-                                fileManager.currentFile.value.content = ""
-                                fileManager.currentFile.value.title = ""
-                                fileManager.currentFile.value.path = ""
+                                fileManager.resetCurrentFile()
                                 closeDir()
                             },
                         painter = painterResource(R.drawable.plus),

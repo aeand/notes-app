@@ -254,7 +254,8 @@ fun Notes(
                     textFieldFocused.value = false
 
                     if (title.value.isNotEmpty() && content.value.isNotEmpty()) {
-                        fileManager.saveFile(title.value, "", content.value, true)
+                        println("${title.value}, ${content.value}")
+                        fileManager.saveFile(title.value, path.value, content.value, true)
                     }
                 },
             text = "Save",

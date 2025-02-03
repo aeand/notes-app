@@ -64,7 +64,7 @@ class FileManager(private val applicationContext: Context) {
         }
 
         currentFile.value.title = file.file.nameWithoutExtension
-        currentFile.value.path = file.file.path
+        currentFile.value.path = file.file.path.replace(root, "").replace(file.file.name, "")
         currentFile.value.content = content
     }
 
@@ -441,7 +441,7 @@ class FileManager(private val applicationContext: Context) {
     private fun deleteFile(file: CustomFile) {
         try {
             if (file.file.isFile) {
-                if (file.file.path == currentFile.value.path) {
+                if (file.file.path.replace(root, "") == currentFile.value.path) {
                     resetCurrentFile()
                 }
                 file.file.delete()
@@ -459,7 +459,7 @@ class FileManager(private val applicationContext: Context) {
         list.forEach { file ->
             try {
                 if (file.file.isFile) {
-                    if (file.file.path == currentFile.value.path) {
+                    if (file.file.path.replace(root, "") == currentFile.value.path) {
                         resetCurrentFile()
                     }
                     file.file.delete()

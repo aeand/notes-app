@@ -45,6 +45,7 @@ import java.io.File
 fun Directory(
     fileManager: FileManager,
     closeDir: () -> Unit,
+    openSaveFolderDialog: () -> Unit
 ) {
     //TODO -> could try to launched effect that updates local files list
 
@@ -307,7 +308,7 @@ fun Directory(
                         modifier = Modifier
                             .size(50.dp)
                             .clickable {
-                                fileManager.saveFolder(fileManager.currentFile.value.title)
+                                openSaveFolderDialog()
                             },
                         painter = painterResource(R.drawable.folder),
                         contentDescription = null,

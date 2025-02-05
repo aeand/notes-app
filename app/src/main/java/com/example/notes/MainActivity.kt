@@ -54,15 +54,34 @@ class MainActivity : ComponentActivity() {
                     .fillMaxSize()
                     .background(Color.Black)
             ) {
+                val showSaveFileDialog = remember { mutableStateOf(true) }
+                if (showSaveFileDialog.value) {
+                    DialogSaveFolder(
+                        confirm = { folderName ->
+                            fileManager.saveFolder(folderName)
+                            showSaveFileDialog.value = false
+                        },
+                        cancel = {
+                            showSaveFileDialog.value = false
+                        }
+                    )
+                }
+
                 val showDir = remember { mutableStateOf(false) }
                 Notes(fileManager) {
                     showDir.value = true
                     fileManager.updateFiles()
                 }
                 if (showDir.value) {
-                    Directory(fileManager) {
-                        showDir.value = false
-                    }
+                    Directory(
+                        fileManager,
+                        closeDir = {
+                            showDir.value = false
+                        },
+                        openSaveFolderDialog = {
+                            showSaveFileDialog.value = true
+                        }
+                    )
                 }
             }
         }

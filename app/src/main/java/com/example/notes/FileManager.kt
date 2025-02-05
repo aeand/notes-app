@@ -2,7 +2,9 @@ package com.example.notes
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import java.io.File
 import java.io.FileInputStream
 
@@ -22,8 +24,8 @@ class FileManager(private val applicationContext: Context) {
 
     val rootFolderName = "Notes"
     val root = "/storage/emulated/0/${rootFolderName}"
-    var files = mutableListOf<CustomFile>()
-    private var previousFiles = mutableListOf<CustomFile>()
+    var files = mutableStateListOf<CustomFile>()
+    private var previousFiles = mutableStateListOf<CustomFile>()
     var currentFile = mutableStateOf(FileContent("", "", ""))
 
     init {
@@ -94,6 +96,7 @@ class FileManager(private val applicationContext: Context) {
                 ).show()
             } else {
                 folder.mkdirs()
+                updateFiles()
                 Toast.makeText(applicationContext, "folder saved", Toast.LENGTH_SHORT).show()
             }
         }
@@ -479,7 +482,7 @@ class FileManager(private val applicationContext: Context) {
         updateFiles()
     }
 
-    private fun getFiles(path: String = ""): MutableList<CustomFile> {
+    private fun getFiles(path: String = ""): SnapshotStateList<CustomFile> {
         val files = File(root, path).listFiles()
         val directoryLevel = path.count { it == '/' } + 1
 
@@ -491,7 +494,7 @@ class FileManager(private val applicationContext: Context) {
             a.isFile.compareTo(b.isFile)
         }
 
-        val result = mutableListOf<CustomFile>()
+        val result = SnapshotStateList<CustomFile>()
         files?.forEach { file ->
             var children: MutableList<CustomFile>? = null
             if (!file.isFile) {

@@ -10,17 +10,18 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /* TODO
 reloading files on move (order looks ok but hit boxes are old)
-reloading files with dir open sometimes removes all files from UI
 redo UI for saving folders
 redo NotesUI when deleting file your on
-move auto save to fileManager
 folder icons for hidden folders (might be more)
 
 close and open new keyboard when clicking new input, with other input focused
@@ -40,6 +41,14 @@ class MainActivity : ComponentActivity() {
         val fileManager = FileManager(this)
 
         setContent {
+            // AUTOSAVE
+            LaunchedEffect(fileManager.currentFile.value.content) {
+                this.launch {
+                    delay(3000)
+                    fileManager.autoSave()
+                }
+            }
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()

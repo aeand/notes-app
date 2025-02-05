@@ -80,8 +80,12 @@ class FileManager(private val applicationContext: Context) {
         saveFile("tmpfileforautosave", "", "", false)
     }
 
-    fun autoSave(content: String) {
-        saveFile("tmpfileforautosave", "", content, false)
+    fun autoSave() {
+        if (currentFile.value.content.isEmpty()) {
+            return
+        }
+
+        saveFile("tmpfileforautosave", "", currentFile.value.content, false)
     }
 
     fun saveFolder(title: String, path: String = "") {

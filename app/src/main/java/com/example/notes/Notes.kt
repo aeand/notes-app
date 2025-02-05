@@ -39,8 +39,6 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun Notes(
@@ -62,16 +60,6 @@ fun Notes(
         title.value = fileManager.currentFile.value.title
         path.value = fileManager.currentFile.value.path
         content.value = fileManager.currentFile.value.content
-    }
-
-    // AUTOSAVE
-    LaunchedEffect(content.value) {
-        this.launch {
-            delay(3000)
-            if (content.value != "") {
-                fileManager.autoSave(content.value)
-            }
-        }
     }
 
     Box(

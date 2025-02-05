@@ -47,8 +47,6 @@ fun Directory(
     closeDir: () -> Unit,
     openSaveFolderDialog: () -> Unit
 ) {
-    //TODO -> could try to launched effect that updates local files list
-
     Box(
         modifier = Modifier
             .fillMaxSize()

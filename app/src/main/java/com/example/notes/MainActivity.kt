@@ -20,8 +20,7 @@ import kotlinx.coroutines.launch
 
 /* TODO
 reloading files on move (order looks ok but hit boxes are old)
-redo UI for saving folders
-redo NotesUI when deleting file your on
+recompose NotesUI when deleting file your on
 folder icons for hidden folders (might be more)
 
 close and open new keyboard when clicking new input, with other input focused

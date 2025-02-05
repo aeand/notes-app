@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 /* TODO
 reloading files on move (order looks ok but hit boxes are old)
 recompose NotesUI when deleting file your on
-folder icons for hidden folders (might be more)
 
 close and open new keyboard when clicking new input, with other input focused
 start folders as folded
@@ -53,7 +52,7 @@ class MainActivity : ComponentActivity() {
                     .fillMaxSize()
                     .background(Color.Black)
             ) {
-                val showSaveFileDialog = remember { mutableStateOf(true) }
+                val showSaveFileDialog = remember { mutableStateOf(false) }
                 if (showSaveFileDialog.value) {
                     DialogSaveFolder(
                         confirm = { folderName ->

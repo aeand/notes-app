@@ -29,6 +29,16 @@ make me able to edit text behind keyboard. When text is just not long enough to 
 want a undo/redo feature (in case I accidentally delete something)
 
 check recompositions
+
+
+
+recent notes
+hide folder then show folder leads to needing to press again
+remove file icon. maybe use something smaller
+after deleting a note, the hit boxes are messed up
+I need/want to add bufferedReader and bufferedWriter for file reading/writing. It will make it a lot faster.
+laggy list and slow to open dir on battery saving mode. Which means it's not at all optimized.
+add a grayed out effect or change the text of "Save" when no changes have been made. Since last save. Or when just loaded.
 */
 
 class MainActivity : ComponentActivity() {

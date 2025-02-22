@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 /* TODO
 after delete, hit boxes are wack
 recompose NotesUI when deleting file your on
-add a grayed out effect or change the text of "Save" when no changes have been made. Since last save. Or when just loaded.
 
 close and open new keyboard when clicking new input, with other input focused
 make me able to edit text behind keyboard. When text is just not long enough to be scrollable and keyboard is in the way

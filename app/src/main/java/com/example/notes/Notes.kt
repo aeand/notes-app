@@ -259,7 +259,7 @@ fun Notes(
                 .align(Alignment.BottomEnd)
                 .size(50.dp)
                 .clickable {
-                    fileManager.currentFile.value = FileManager.FileContent(
+                    fileManager.currentFile.value = FileContent(
                         title.value,
                         path.value,
                         content.value

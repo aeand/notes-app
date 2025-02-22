@@ -2,6 +2,7 @@ package com.example.notes
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -14,9 +15,9 @@ class CustomFile(
 )
 
 class FileContent(
-    var title: String,
-    var path: String,
-    var content: String,
+    var title: MutableState<String>,
+    var path: MutableState<String>,
+    var content: MutableState<String>,
 )
 
 class FileManager(private val applicationContext: Context) {
@@ -24,7 +25,12 @@ class FileManager(private val applicationContext: Context) {
     private val root = "/storage/emulated/0/${rootFolderName}"
     var files = mutableStateListOf<CustomFile>()
     private var previousFiles = mutableStateListOf<CustomFile>()
-    var currentFile = mutableStateOf(FileContent("", "", ""))
+    var currentFile = FileContent(
+        mutableStateOf(""),
+        mutableStateOf(""),
+        mutableStateOf("")
+    )
+    private var originalContent: String? = null
 
     init {
         files = getFiles("")
@@ -58,15 +64,24 @@ class FileManager(private val applicationContext: Context) {
             it.readText()
         }
 
-        currentFile.value.title = file.file.nameWithoutExtension
-        currentFile.value.path = file.file.path.replace(root, "").replace(file.file.name, "")
-        currentFile.value.content = content
+        currentFile.title.value = file.file.nameWithoutExtension
+        currentFile.path.value = file.file.path.replace(root, "").replace(file.file.name, "")
+        currentFile.content.value = content
+        originalContent = content
     }
 
     fun resetCurrentFile() {
-        currentFile.value.title = ""
-        currentFile.value.path = ""
-        currentFile.value.content = ""
+        currentFile.title.value = ""
+        currentFile.path.value = ""
+        currentFile.content.value = ""
+        originalContent = null
+    }
+
+    fun fileHasChanges(): Boolean {
+        if (originalContent == null)
+            return true
+
+        return currentFile.content.value != originalContent
     }
 
     private fun createAutoSaveFile() {
@@ -74,11 +89,11 @@ class FileManager(private val applicationContext: Context) {
     }
 
     fun autoSave() {
-        if (currentFile.value.content.isEmpty()) {
+        if (currentFile.content.value.isEmpty()) {
             return
         }
 
-        saveFile("tmpfileforautosave", "", currentFile.value.content, false)
+        saveFile("tmpfileforautosave", "", currentFile.content.value, false)
     }
 
     fun saveFile(title: String, path: String = "", content: String, showToast: Boolean) {
@@ -91,6 +106,7 @@ class FileManager(private val applicationContext: Context) {
         letDirectory.mkdirs()
         val file = File(letDirectory, "$title.txt")
         file.writeText(content)
+        originalContent = content
 
         if (showToast) {
             Toast.makeText(applicationContext, "file saved", Toast.LENGTH_SHORT).show()
@@ -102,7 +118,7 @@ class FileManager(private val applicationContext: Context) {
     fun deleteFiles(list: List<CustomFile>) {
         list.forEach { file ->
             try {
-                if (file.file.path.replace(root, "") == currentFile.value.path) {
+                if (file.file.path.replace(root, "") == currentFile.path.value) {
                     resetCurrentFile()
                 }
                 file.file.delete()

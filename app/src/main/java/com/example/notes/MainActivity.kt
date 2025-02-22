@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             // AUTOSAVE
-            LaunchedEffect(fileManager.currentFile.value.content) {
+            LaunchedEffect(fileManager.currentFile.content.value) {
                 this.launch {
                     delay(3000)
                     fileManager.autoSave()

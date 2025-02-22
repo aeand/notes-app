@@ -19,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -46,21 +45,6 @@ fun Notes(
     openDir: () -> Unit,
 ) {
     val textFieldFocused = remember { mutableStateOf(false) }
-
-    val title = remember { mutableStateOf(fileManager.currentFile.value.title) }
-    val path = remember { mutableStateOf(fileManager.currentFile.value.path) }
-    val content = remember { mutableStateOf(fileManager.currentFile.value.content) }
-
-    // UPDATE FIELDS
-    LaunchedEffect(
-        fileManager.currentFile.value.title,
-        fileManager.currentFile.value.path,
-        fileManager.currentFile.value.content
-    ) {
-        title.value = fileManager.currentFile.value.title
-        path.value = fileManager.currentFile.value.path
-        content.value = fileManager.currentFile.value.content
-    }
 
     Box(
         modifier = Modifier
@@ -91,9 +75,9 @@ fun Notes(
                         }
                     }
                     .background(Color.Black),
-                value = content.value,
+                value = fileManager.currentFile.content.value,
                 onValueChange = { it: String ->
-                    content.value = it
+                    fileManager.currentFile.content.value = it
                 },
                 cursorBrush = Brush.verticalGradient(
                     0.00f to Color.White,
@@ -131,7 +115,7 @@ fun Notes(
                             .fillMaxSize()
                             .padding(start = 20.dp, top = 20.dp, end = 20.dp)
                     ) {
-                        if (content.value.isEmpty()) {
+                        if (fileManager.currentFile.content.value.isEmpty()) {
                             Text(
                                 modifier = Modifier,
                                 text = "Write something",
@@ -165,9 +149,9 @@ fun Notes(
                         }
                     }
                     .background(Color.Black),
-                value = title.value,
+                value = fileManager.currentFile.title.value,
                 onValueChange = { it: String ->
-                    title.value = it
+                    fileManager.currentFile.title.value = it
                 },
                 cursorBrush = Brush.verticalGradient(
                     0.00f to Color.White,
@@ -205,7 +189,7 @@ fun Notes(
                             .fillMaxSize()
                             .padding(start = 20.dp, end = 20.dp)
                     ) {
-                        if (title.value.isEmpty()) {
+                        if (fileManager.currentFile.title.value.isEmpty()) {
                             Text(
                                 modifier = Modifier
                                     .align(Alignment.CenterStart),
@@ -233,37 +217,38 @@ fun Notes(
             )
         }
 
-        Text(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .offset(x = (-60).dp, y = (-11).dp)
-                .clickable {
-                    focusManager.clearFocus()
-                    textFieldFocused.value = false
+        if (fileManager.currentFile.content.value.isNotEmpty() && fileManager.fileHasChanges()) {
+            Text(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .offset(x = (-60).dp, y = (-11).dp)
+                    .clickable {
+                        focusManager.clearFocus()
+                        textFieldFocused.value = false
 
-                    if (title.value.isNotEmpty() && content.value.isNotEmpty()) {
-                        println("${title.value}, ${content.value}")
-                        fileManager.saveFile(title.value, path.value, content.value, true)
-                    }
-                },
-            text = "Save",
-            color = if (content.value.isEmpty()) Color.LightGray else Color.White,
-            fontFamily = Typography.bodyLarge.fontFamily,
-            fontSize = Typography.bodyLarge.fontSize,
-            fontWeight = Typography.bodyLarge.fontWeight,
-            lineHeight = Typography.bodyLarge.lineHeight,
-        )
+                        if (fileManager.currentFile.title.value.isNotEmpty() && fileManager.currentFile.content.value.isNotEmpty()) {
+                            fileManager.saveFile(
+                                fileManager.currentFile.title.value,
+                                fileManager.currentFile.path.value,
+                                fileManager.currentFile.content.value,
+                                true
+                            )
+                        }
+                    },
+                text = "Save",
+                color = Color.White,
+                fontFamily = Typography.bodyLarge.fontFamily,
+                fontSize = Typography.bodyLarge.fontSize,
+                fontWeight = Typography.bodyLarge.fontWeight,
+                lineHeight = Typography.bodyLarge.lineHeight,
+            )
+        }
 
         Icon(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .size(50.dp)
                 .clickable {
-                    fileManager.currentFile.value = FileContent(
-                        title.value,
-                        path.value,
-                        content.value
-                    )
                     openDir()
                 },
             painter = painterResource(R.drawable.burger_menu),

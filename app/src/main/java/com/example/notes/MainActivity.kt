@@ -20,10 +20,10 @@ import kotlinx.coroutines.launch
 
 /* TODO
 close and open new keyboard when clicking new input, with other input focused
-make me able to edit text behind keyboard. When text is just not long enough to be scrollable and keyboard is in the way
-want a undo/redo feature (in case I accidentally delete something)
+not able to edit text behind keyboard
+add undo/redo
 
-laggy list and slow to open dir on battery saving mode. Which means it's not at all optimized.
+laggy dir on low battery
 check recompositions
 */
 

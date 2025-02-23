@@ -20,11 +20,12 @@ class FileContent(
     var content: MutableState<String>,
 )
 
-class FileManager(private val applicationContext: Context) {
+class FileManager(
+    private val applicationContext: Context
+) {
     val rootFolderName = "Notes"
     private val root = "/storage/emulated/0/${rootFolderName}"
     var files = mutableStateListOf<CustomFile>()
-    private var previousFiles = mutableStateListOf<CustomFile>()
     var currentFile = FileContent(
         mutableStateOf(""),
         mutableStateOf(""),
@@ -34,23 +35,15 @@ class FileManager(private val applicationContext: Context) {
 
     init {
         files = getFiles("")
-
-        val autoSaveFile = files.find { it.file.nameWithoutExtension == "tmpfileforautosave" }
-        if (autoSaveFile == null) {
-            createAutoSaveFile()
-        }
     }
 
     fun updateFiles() {
-        files.forEach { previousFiles.add(it) }
         files.clear()
 
         getFiles().forEach {
             if (it.file.exists())
                 files.add(it)
         }
-
-        previousFiles.clear()
     }
 
     fun openFile(fileName: String) {
@@ -82,10 +75,6 @@ class FileManager(private val applicationContext: Context) {
             return true
 
         return currentFile.content.value != originalContent
-    }
-
-    private fun createAutoSaveFile() {
-        saveFile("tmpfileforautosave", "", "", false)
     }
 
     fun autoSave() {

@@ -34,16 +34,12 @@ class FileManager(
     private var originalContent: String? = null
 
     init {
-        files = getFiles("")
+        files = getAllFiles()
     }
 
     fun updateFiles() {
         files.clear()
-
-        getFiles().forEach {
-            if (it.file.exists())
-                files.add(it)
-        }
+        files = getAllFiles()
     }
 
     fun openFile(fileName: String) {
@@ -120,12 +116,10 @@ class FileManager(
                 println("error: delete file failure $e")
             }
         }
-
-        updateFiles()
     }
 
-    private fun getFiles(path: String = ""): SnapshotStateList<CustomFile> {
-        val files = File(root, path).listFiles()
+    private fun getAllFiles(): SnapshotStateList<CustomFile> {
+        val files = File(root, "").listFiles()
 
         files?.sortWith { a, b ->
             a.name.uppercase().compareTo(b.name.uppercase())
@@ -140,13 +134,13 @@ class FileManager(
             if (file.nameWithoutExtension == "tmpfileforautosave")
                 return@forEach
 
-            var str = file.readLines(Charsets.UTF_8)[0]
-            if (str.contains("#"))
-                str = str.replace("#", "").trim()
-            else
-                str = ""
+            if (!file.exists())
+                return@forEach
 
-            result.add(CustomFile(file, str))
+            var tag = file.readLines(Charsets.UTF_8)[0]
+            tag = if (tag.contains("#")) tag.replace("#", "").trim().lowercase() else ""
+
+            result.add(CustomFile(file, tag))
         }
 
         result.sortWith { a, b ->

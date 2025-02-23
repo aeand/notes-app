@@ -19,9 +19,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /* TODO
-after delete, hit boxes are wack
-recompose NotesUI when deleting file your on
-
 close and open new keyboard when clicking new input, with other input focused
 make me able to edit text behind keyboard. When text is just not long enough to be scrollable and keyboard is in the way
 want a undo/redo feature (in case I accidentally delete something)

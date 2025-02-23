@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import java.io.File
 import java.io.FileInputStream
 
@@ -31,15 +30,15 @@ class FileManager(
         mutableStateOf(""),
         mutableStateOf("")
     )
+    private var originalTitle: String? = null
     private var originalContent: String? = null
 
     init {
-        files = getAllFiles()
+        getAllFiles()
     }
 
     fun updateFiles() {
-        files.clear()
-        files = getAllFiles()
+        getAllFiles()
     }
 
     fun openFile(fileName: String) {
@@ -56,6 +55,7 @@ class FileManager(
         currentFile.title.value = file.file.nameWithoutExtension
         currentFile.path.value = file.file.path.replace(root, "").replace(file.file.name, "")
         currentFile.content.value = content
+        originalTitle = content
         originalContent = content
     }
 
@@ -63,14 +63,15 @@ class FileManager(
         currentFile.title.value = ""
         currentFile.path.value = ""
         currentFile.content.value = ""
+        originalTitle = null
         originalContent = null
     }
 
     fun fileHasChanges(): Boolean {
-        if (originalContent == null)
+        if (originalContent == null || originalTitle == null)
             return true
 
-        return currentFile.content.value != originalContent
+        return currentFile.content.value != originalContent || currentFile.title.value != originalTitle
     }
 
     fun autoSave() {
@@ -91,6 +92,7 @@ class FileManager(
         letDirectory.mkdirs()
         val file = File(letDirectory, "$title.txt")
         file.writeText(content)
+        originalTitle = title
         originalContent = content
 
         if (showToast) {
@@ -118,7 +120,7 @@ class FileManager(
         }
     }
 
-    private fun getAllFiles(): SnapshotStateList<CustomFile> {
+    private fun getAllFiles() {
         val files = File(root, "").listFiles()
 
         files?.sortWith { a, b ->
@@ -129,7 +131,7 @@ class FileManager(
             a.isFile.compareTo(b.isFile)
         }
 
-        val result = SnapshotStateList<CustomFile>()
+        val customFiles = mutableListOf<CustomFile>()
         files?.forEach { file ->
             if (file.nameWithoutExtension == "tmpfileforautosave")
                 return@forEach
@@ -140,13 +142,16 @@ class FileManager(
             var tag = file.readLines(Charsets.UTF_8)[0]
             tag = if (tag.contains("#")) tag.replace("#", "").trim().lowercase() else ""
 
-            result.add(CustomFile(file, tag))
+            customFiles.add(CustomFile(file, tag))
         }
 
-        result.sortWith { a, b ->
+        customFiles.sortWith { a, b ->
             a.tag.compareTo(b.tag)
         }
 
-        return result
+        this.files.clear()
+        customFiles.forEach {
+            this.files.add(it)
+        }
     }
 }

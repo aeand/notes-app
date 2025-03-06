@@ -41,7 +41,10 @@ fun Directory(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Transparent)
-            .clickable {
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) {
                 closeDir()
             }
     ) {

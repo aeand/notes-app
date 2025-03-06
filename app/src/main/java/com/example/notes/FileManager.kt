@@ -108,8 +108,6 @@ class FileManager(
     fun deleteFiles(list: List<CustomFile>) {
         list.forEach { file ->
             try {
-                println(file.file.path.replace(root, ""))
-
                 if (file.file.nameWithoutExtension == currentFile.title.value) {
                     resetCurrentFile()
                 }

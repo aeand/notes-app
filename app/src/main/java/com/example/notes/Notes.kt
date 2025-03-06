@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -235,29 +236,36 @@ fun Notes(
                         horizontalArrangement = Arrangement.End,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            modifier = Modifier
-                                .padding(end = 10.dp)
-                                .clickable {
-                                    focusManager.clearFocus()
-                                    textFieldFocused.value = false
+                        val showSave = remember { mutableStateOf(false) }
 
-                                    if (fileManager.currentFile.title.value.isNotEmpty() && fileManager.currentFile.content.value.isNotEmpty()) {
-                                        fileManager.saveFile(
-                                            fileManager.currentFile.title.value,
-                                            fileManager.currentFile.path.value,
-                                            fileManager.currentFile.content.value,
-                                            true
-                                        )
-                                    }
-                                },
-                            text = "Save",
-                            color = Color.White,
-                            fontFamily = Typography.bodyLarge.fontFamily,
-                            fontSize = Typography.bodyLarge.fontSize,
-                            fontWeight = Typography.bodyLarge.fontWeight,
-                            lineHeight = Typography.bodyLarge.lineHeight,
-                        )
+                        LaunchedEffect(
+                            fileManager.currentFile.title.value,
+                            fileManager.currentFile.content.value
+                        ) {
+                            if (fileManager.currentFile.content.value.isEmpty() && fileManager.currentFile.title.value.isEmpty())
+                                showSave.value = false
+                            else
+                                showSave.value = fileManager.fileHasChanges()
+                        }
+
+                        if (showSave.value) {
+                            Text(
+                                modifier = Modifier
+                                    .padding(end = 10.dp)
+                                    .clickable {
+                                        focusManager.clearFocus()
+                                        textFieldFocused.value = false
+                                        fileManager.saveCurrentFile()
+                                        showSave.value = false
+                                    },
+                                text = "Save",
+                                color = Color.White,
+                                fontFamily = Typography.bodyLarge.fontFamily,
+                                fontSize = Typography.bodyLarge.fontSize,
+                                fontWeight = Typography.bodyLarge.fontWeight,
+                                lineHeight = Typography.bodyLarge.lineHeight,
+                            )
+                        }
 
                         Icon(
                             modifier = Modifier

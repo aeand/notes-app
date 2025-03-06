@@ -15,7 +15,6 @@ class CustomFile(
 
 class FileContent(
     var title: MutableState<String>,
-    var path: MutableState<String>,
     var content: MutableState<String>,
 )
 
@@ -27,11 +26,10 @@ class FileManager(
     var files = mutableStateListOf<CustomFile>()
     var currentFile = FileContent(
         mutableStateOf(""),
-        mutableStateOf(""),
         mutableStateOf("")
     )
-    private var originalTitle: String? = null
-    private var originalContent: String? = null
+    private var originalTitle: String = ""
+    private var originalContent: String = ""
 
     init {
         getAllFiles()
@@ -53,25 +51,26 @@ class FileManager(
         }
 
         currentFile.title.value = file.file.nameWithoutExtension
-        currentFile.path.value = file.file.path.replace(root, "").replace(file.file.name, "")
         currentFile.content.value = content
-        originalTitle = content
+        originalTitle = file.file.nameWithoutExtension
         originalContent = content
     }
 
     fun resetCurrentFile() {
         currentFile.title.value = ""
-        currentFile.path.value = ""
         currentFile.content.value = ""
-        originalTitle = null
-        originalContent = null
+        originalTitle = ""
+        originalContent = ""
     }
 
     fun fileHasChanges(): Boolean {
-        if (originalContent == null || originalTitle == null)
+        if (currentFile.title.value.isEmpty() && currentFile.content.value.isEmpty())
+            return false
+
+        if (originalContent.isEmpty() || originalTitle.isEmpty())
             return true
 
-        return currentFile.content.value != originalContent || currentFile.title.value != originalTitle
+        return currentFile.title.value != originalTitle || currentFile.content.value != originalContent
     }
 
     fun autoSave() {
@@ -79,33 +78,39 @@ class FileManager(
             return
         }
 
-        saveFile("tmpfileforautosave", "", currentFile.content.value, false)
+        val letDirectory = File(root, "")
+        letDirectory.mkdirs()
+        val file = File(letDirectory, "tmpfileforautosave.txt")
+        file.writeText(currentFile.content.value)
     }
 
-    fun saveFile(title: String, path: String = "", content: String, showToast: Boolean) {
-        if (title.isEmpty() || content.isEmpty()) {
-            Toast.makeText(applicationContext, "no content or title", Toast.LENGTH_SHORT).show()
+    fun saveCurrentFile() {
+        if (currentFile.title.value.isEmpty()) {
+            Toast
+                .makeText(applicationContext, "missing title or content", Toast.LENGTH_SHORT)
+                .show()
             return
         }
 
-        val letDirectory = File(root, path)
+        val letDirectory = File(root, "")
         letDirectory.mkdirs()
-        val file = File(letDirectory, "$title.txt")
-        file.writeText(content)
-        originalTitle = title
-        originalContent = content
+        val file = File(letDirectory, "${currentFile.title.value}.txt")
+        file.writeText(currentFile.content.value)
 
-        if (showToast) {
-            Toast.makeText(applicationContext, "file saved", Toast.LENGTH_SHORT).show()
-        }
+        originalTitle = currentFile.title.value
+        originalContent = currentFile.content.value
+        currentFile.title.value = currentFile.title.value
+        currentFile.content.value = currentFile.content.value
 
-        return
+        Toast.makeText(applicationContext, "file saved", Toast.LENGTH_SHORT).show()
     }
 
     fun deleteFiles(list: List<CustomFile>) {
         list.forEach { file ->
             try {
-                if (file.file.path.replace(root, "") == currentFile.path.value) {
+                println(file.file.path.replace(root, ""))
+
+                if (file.file.nameWithoutExtension == currentFile.title.value) {
                     resetCurrentFile()
                 }
                 file.file.delete()
@@ -139,8 +144,13 @@ class FileManager(
             if (!file.exists())
                 return@forEach
 
-            var tag = file.readLines(Charsets.UTF_8)[0]
-            tag = if (tag.contains("#")) tag.replace("#", "").trim().lowercase() else ""
+            val tag = if (
+                file.readLines(Charsets.UTF_8).isNotEmpty()
+                && file.readLines(Charsets.UTF_8)[0].contains("#")
+            )
+                file.readLines(Charsets.UTF_8)[0].replace("#", "").trim().lowercase()
+            else
+                ""
 
             customFiles.add(CustomFile(file, tag))
         }

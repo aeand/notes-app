@@ -19,6 +19,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /* TODO
+add a scrollbar to text field
 close and open new keyboard when clicking new input, with other input focused
 not able to edit text behind keyboard
 add undo/redo

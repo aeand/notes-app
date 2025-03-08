@@ -208,7 +208,7 @@ fun Notes(
                                             .align(Alignment.CenterStart),
                                         text = "Title",
                                         textAlign = TextAlign.Left,
-                                        fontFamily = FontFamily(roboto["italic"]!!),
+                                        fontFamily = FontFamily(Font(R.font.roboto_italic)),
                                         fontSize = Typography.titleMedium.fontSize,
                                         fontWeight = Typography.titleMedium.fontWeight,
                                         lineHeight = Typography.titleMedium.lineHeight,

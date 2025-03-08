@@ -1,7 +1,6 @@
 package com.example.notes
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,9 +26,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -48,40 +44,27 @@ fun Notes(
     fileManager: FileManager,
     openDir: () -> Unit,
 ) {
-    val textFieldFocused = remember { mutableStateOf(false) }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        val focusManager = LocalFocusManager.current
-        val focusRequester = remember { FocusRequester() }
-
-        val customTextSelectionColors = TextSelectionColors(
-            handleColor = Color.Gray,
-            backgroundColor = Color.DarkGray
-        )
-
+    Box(modifier = Modifier.fillMaxSize()) {
         CompositionLocalProvider(
-            LocalTextSelectionColors provides customTextSelectionColors
+            LocalTextSelectionColors provides TextSelectionColors(
+                handleColor = Color.Gray,
+                backgroundColor = Color.DarkGray
+            )
         ) {
-            val interactionSourceTitle = remember { MutableInteractionSource() }
-            val interactionSourceContent = remember { MutableInteractionSource() }
-
             BasicTextField(
                 modifier = Modifier
                     .padding(bottom = 90.dp)
-                    .fillMaxSize()
-                    .focusRequester(focusRequester)
-                    .onFocusChanged {
-                        if (it.isFocused) {
-                            textFieldFocused.value = true
-                        }
-                    },
+                    .fillMaxSize(),
                 value = fileManager.currentFile.content.value,
-                onValueChange = { it: String ->
-                    fileManager.currentFile.content.value = it
-                },
+                onValueChange = { it: String -> fileManager.currentFile.content.value = it },
+                singleLine = false,
+                maxLines = Int.MAX_VALUE,
+                visualTransformation = VisualTransformation.None,
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                    autoCorrectEnabled = false,
+                    imeAction = ImeAction.None
+                ),
                 cursorBrush = Brush.verticalGradient(
                     0.00f to Color.White,
                     0.15f to Color.White,
@@ -98,20 +81,6 @@ fun Notes(
                     letterSpacing = Typography.bodyLarge.letterSpacing,
                     color = Color.White,
                 ),
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.None,
-                    autoCorrectEnabled = false,
-                    imeAction = ImeAction.Unspecified
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        focusManager.clearFocus()
-                        textFieldFocused.value = false
-                    }
-                ),
-                singleLine = false,
-                maxLines = Int.MAX_VALUE,
-                visualTransformation = VisualTransformation.None,
                 decorationBox = { innerTextField ->
                     Box(
                         modifier = Modifier
@@ -134,9 +103,6 @@ fun Notes(
                         }
                     }
                 },
-                onTextLayout = {},
-                interactionSource = interactionSourceContent,
-                minLines = 1,
             )
 
             Column(
@@ -144,6 +110,8 @@ fun Notes(
                     .align(Alignment.BottomCenter)
             ) {
                 HorizontalDivider(color = Color.DarkGray)
+
+                val focusManager = LocalFocusManager.current
 
                 Row(
                     modifier = Modifier
@@ -155,17 +123,22 @@ fun Notes(
                     BasicTextField(
                         modifier = Modifier
                             .fillMaxWidth(0.7f)
-                            .fillMaxHeight()
-                            .focusRequester(focusRequester)
-                            .onFocusChanged {
-                                if (it.isFocused) {
-                                    textFieldFocused.value = true
-                                }
-                            },
+                            .fillMaxHeight(),
                         value = fileManager.currentFile.title.value,
-                        onValueChange = { it: String ->
-                            fileManager.currentFile.title.value = it
-                        },
+                        onValueChange = { it: String -> fileManager.currentFile.title.value = it },
+                        singleLine = false,
+                        maxLines = 1,
+                        visualTransformation = VisualTransformation.None,
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.None,
+                            autoCorrectEnabled = false,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                focusManager.clearFocus()
+                            }
+                        ),
                         cursorBrush = Brush.verticalGradient(
                             0.00f to Color.White,
                             0.15f to Color.White,
@@ -182,20 +155,6 @@ fun Notes(
                             letterSpacing = Typography.titleMedium.letterSpacing,
                             color = Color.White,
                         ),
-                        keyboardOptions = KeyboardOptions(
-                            capitalization = KeyboardCapitalization.None,
-                            autoCorrectEnabled = false,
-                            imeAction = ImeAction.Done
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onDone = {
-                                focusManager.clearFocus()
-                                textFieldFocused.value = false
-                            }
-                        ),
-                        singleLine = false,
-                        maxLines = 1,
-                        visualTransformation = VisualTransformation.None,
                         decorationBox = { innerTextField ->
                             Box(
                                 modifier = Modifier
@@ -224,9 +183,6 @@ fun Notes(
                                 }
                             }
                         },
-                        onTextLayout = {},
-                        interactionSource = interactionSourceTitle,
-                        minLines = 1,
                     )
 
                     Row(
@@ -253,8 +209,6 @@ fun Notes(
                                 modifier = Modifier
                                     .padding(end = 10.dp)
                                     .clickable {
-                                        focusManager.clearFocus()
-                                        textFieldFocused.value = false
                                         fileManager.saveCurrentFile()
                                         showSave.value = false
                                     },

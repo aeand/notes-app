@@ -188,7 +188,8 @@ fun Notes(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .fillMaxHeight(),
+                            .fillMaxHeight()
+                            .padding(end = 10.dp),
                         horizontalArrangement = Arrangement.End,
                         verticalAlignment = Alignment.CenterVertically
                     ) {

@@ -53,6 +53,7 @@ fun Directory(
 
         Box(
             modifier = Modifier
+                .padding(10.dp)
                 .width(200.dp)
                 .fillMaxHeight()
                 .align(Alignment.BottomEnd)

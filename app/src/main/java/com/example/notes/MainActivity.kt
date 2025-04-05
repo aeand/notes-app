@@ -19,10 +19,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /* TODO
+not able to edit text behind keyboard
 add a scrollbar to text field
 close and open new keyboard when clicking new input, with other input focused
-not able to edit text behind keyboard
-add undo/redo
+add new root path if permissions where denied
 
 laggy dir on low battery
 check recompositions

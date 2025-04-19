@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -51,12 +52,20 @@ fun Notes(
                 backgroundColor = Color.DarkGray
             )
         ) {
+            val lineCount = remember { mutableIntStateOf(1) }
+            LaunchedEffect(lineCount.intValue) {
+                if (lineCount.intValue in 22..27) {
+                    fileManager.currentFile.content.value += "\n\n\n\n\n\n\n\n\n\n\n"
+                }
+            }
+
             BasicTextField(
                 modifier = Modifier
                     .padding(bottom = 90.dp)
                     .fillMaxSize(),
                 value = fileManager.currentFile.content.value,
                 onValueChange = { it: String -> fileManager.currentFile.content.value = it },
+                onTextLayout = { lineCount.intValue = it.lineCount },
                 singleLine = false,
                 maxLines = Int.MAX_VALUE,
                 visualTransformation = VisualTransformation.None,

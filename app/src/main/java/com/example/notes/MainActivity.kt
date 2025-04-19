@@ -19,6 +19,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /* TODO
+rotation deletes content in textfield
+make title field scrollable to the right. so it don't wrap itself
+opening dir takes a 'long' time. too long for my patience tho
+delete auto saving
+file name cannot include ? and more characters. be sure to regex the title before saving
 add a scrollbar to text field
 close and open new keyboard when clicking new input, with other input focused
 

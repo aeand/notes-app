@@ -20,16 +20,35 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /* TODO
-rotation deletes content in textfield
-make title field scrollable to the right. so it don't wrap itself
-opening dir takes a 'long' time. too long for my patience tho
-delete auto saving
-file name cannot include ? and more characters. be sure to regex the title before saving
-add a scrollbar to text field
-close and open new keyboard when clicking new input, with other input focused
+Bugs:
+- bug rotating app deletes text
+- bug make title field scrollable to the right. so it dont wrap itself
+- bug file name cannot include ? and more characters. be sure to regex the title before saving
+- bug content textfield does not match with the divider. text gets cut off before divider
+- bug save hides after saving to file with empty title
+- bug holding erase removed 1 char in front. like delete. Might be how android works. backspaces and deletes over and over when on low battery.
+- bug navigating out and in of app removed all content. happened once
+- bug trim when reading tags
+- bug close and open new keyboard when clicking new input, with other input focused
 
-laggy dir on low battery
-check recompositions
+Fix:
+- delete auto save
+- autosave always after 0.5sec when title exists
+- close keyboard when opening dir
+- change readfile from fileinputstream to filereader. stream is meant for images
+-
+
+Notes:
+- check how Writer Journal handles root folder access and permission requests. Very nice.
+- king idea. open app into a files list. start a new activity when clicking on a note. to go back, use the back functionality. will make the structure clean and good. one note activity is directly tied to the note that is opened. the note will be auto saved as soon as the activity is closed in any way. Could move title to top center and make it part of the scrollable document. also bottom button would overlay the textfield. same with title. to fit more text on screen. by putting everything in a column and increasing height, i can scroll title and content. and maybe fix writing behind keyboard issues
+
+Might be fixed:
+- opening dir takes a 'long' time. too long for my patience tho
+- make sure file ends with new lines when long enough
+
+Performance:
+- laggy dir on low battery
+- check recompositions
 */
 
 class MainActivity : ComponentActivity() {

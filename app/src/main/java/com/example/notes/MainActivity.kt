@@ -31,7 +31,6 @@ Bugs:
 - bug close and open new keyboard when clicking new input, with other input focused
 
 Fix:
-- close keyboard when opening dir
 - change readfile from fileinputstream to filereader. stream is meant for images
 
 Notes:

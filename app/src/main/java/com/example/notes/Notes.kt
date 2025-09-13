@@ -235,6 +235,7 @@ fun Notes(
                             modifier = Modifier
                                 .size(50.dp)
                                 .clickable {
+                                    focusManager.clearFocus()
                                     openDir()
                                 },
                             painter = painterResource(R.drawable.burger_menu),

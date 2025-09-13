@@ -73,17 +73,6 @@ class FileManager(
         return currentFile.title.value != originalTitle || currentFile.content.value != originalContent
     }
 
-    fun autoSave() {
-        if (currentFile.content.value.isEmpty()) {
-            return
-        }
-
-        val letDirectory = File(root, "")
-        letDirectory.mkdirs()
-        val file = File(letDirectory, "tmpfileforautosave.txt")
-        file.writeText(currentFile.content.value)
-    }
-
     fun saveCurrentFile() {
         if (currentFile.title.value.isEmpty()) {
             Toast
@@ -136,9 +125,6 @@ class FileManager(
 
         val customFiles = mutableListOf<CustomFile>()
         files?.forEach { file ->
-            if (file.nameWithoutExtension == "tmpfileforautosave")
-                return@forEach
-
             if (!file.exists())
                 return@forEach
 

@@ -28,15 +28,11 @@ Bugs:
 - bug save hides after saving to file with empty title
 - bug holding erase removed 1 char in front. like delete. Might be how android works. backspaces and deletes over and over when on low battery.
 - bug navigating out and in of app removed all content. happened once
-- bug trim when reading tags
 - bug close and open new keyboard when clicking new input, with other input focused
 
 Fix:
-- delete auto save
-- autosave always after 0.5sec when title exists
 - close keyboard when opening dir
 - change readfile from fileinputstream to filereader. stream is meant for images
--
 
 Notes:
 - check how Writer Journal handles root folder access and permission requests. Very nice.
@@ -62,14 +58,6 @@ class MainActivity : ComponentActivity() {
         window.navigationBarColor = Color.Black.toArgb()
 
         setContent {
-            // AUTOSAVE
-            LaunchedEffect(fileManager.currentFile.content.value) {
-                this.launch {
-                    delay(3000)
-                    fileManager.autoSave()
-                }
-            }
-
             Box(
                 modifier = Modifier
                     .fillMaxSize()

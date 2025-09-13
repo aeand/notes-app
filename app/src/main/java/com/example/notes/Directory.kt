@@ -74,24 +74,6 @@ fun Directory(
                 lineHeight = Typography.titleLarge.lineHeight,
             )
 
-            Text(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(start = 5.dp, top = 60.dp, bottom = 10.dp)
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .clickable {
-                        fileManager.openFile("tmpfileforautosave")
-                        closeDir()
-                    },
-                text = "Auto save",
-                color = Color.White,
-                fontFamily = Typography.bodyLarge.fontFamily,
-                fontSize = Typography.bodyLarge.fontSize,
-                fontWeight = Typography.bodyLarge.fontWeight,
-                lineHeight = Typography.bodyLarge.lineHeight,
-            )
-
             LazyColumn(
                 modifier = Modifier
                     .align(Alignment.BottomStart)

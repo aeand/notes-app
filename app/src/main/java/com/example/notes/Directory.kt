@@ -77,7 +77,7 @@ fun Directory(
             LazyColumn(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(top = 120.dp, bottom = 60.dp)
+                    .padding(top = 70.dp, bottom = 60.dp)
             ) {
                 itemsIndexed(fileManager.files) { index, file ->
                     if (file.tag.isNotEmpty() && index != 0 && fileManager.files[index - 1].tag != file.tag) {

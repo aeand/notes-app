@@ -30,9 +30,6 @@ Bugs:
 - bug navigating out and in of app removed all content. happened once
 - bug close and open new keyboard when clicking new input, with other input focused
 
-Fix:
-- change readfile from fileinputstream to filereader. stream is meant for images
-
 Notes:
 - check how Writer Journal handles root folder access and permission requests. Very nice.
 - king idea. open app into a files list. start a new activity when clicking on a note. to go back, use the back functionality. will make the structure clean and good. one note activity is directly tied to the note that is opened. the note will be auto saved as soon as the activity is closed in any way. Could move title to top center and make it part of the scrollable document. also bottom button would overlay the textfield. same with title. to fit more text on screen. by putting everything in a column and increasing height, i can scroll title and content. and maybe fix writing behind keyboard issues

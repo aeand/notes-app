@@ -1,5 +1,6 @@
 package com.example.notes
 
+import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,22 +11,15 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /* TODO
 Bugs:
-- bug rotating app deletes text
-- bug content textfield does not match with the divider. text gets cut off before divider
-- bug save hides after saving to file with empty title
 - bug holding erase removed 1 char in front. like delete. Might be how android works. backspaces and deletes over and over when on low battery.
-- bug navigating out and in of app removed all content. happened once
 - bug close and open new keyboard when clicking new input, with other input focused
 
 Notes:
@@ -41,15 +35,19 @@ Performance:
 - check recompositions
 */
 
+object AppInit: Application() {
+    val fileManager = FileManager(this)
+}
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         requestPermissions()
-        val fileManager = FileManager(this)
 
         window.statusBarColor = Color.Black.toArgb()
         window.navigationBarColor = Color.Black.toArgb()
+        val fileManager = AppInit.fileManager
 
         setContent {
             Box(

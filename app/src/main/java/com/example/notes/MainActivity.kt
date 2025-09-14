@@ -28,7 +28,6 @@ Notes:
 
 Might be fixed:
 - opening dir takes a 'long' time. too long for my patience tho
-- make sure file ends with new lines when long enough
 
 Performance:
 - laggy dir on low battery

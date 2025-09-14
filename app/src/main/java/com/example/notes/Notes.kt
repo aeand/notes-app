@@ -56,8 +56,9 @@ fun Notes(
         ) {
             val lineCount = remember { mutableIntStateOf(1) }
             LaunchedEffect(lineCount.intValue) {
-                if (lineCount.intValue in 22..27) {
-                    fileManager.currentFile.content.value += "\n\n\n\n\n\n\n\n\n\n\n"
+                val extraSpacing = "\n\n\n\n\n\n\n\n\n\n\n"
+                if (lineCount.intValue in 22..27 && !fileManager.currentFile.content.value.endsWith(extraSpacing)) {
+                    fileManager.currentFile.content.value += extraSpacing
                 }
             }
 

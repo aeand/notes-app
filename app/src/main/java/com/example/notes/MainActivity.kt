@@ -22,7 +22,6 @@ import kotlinx.coroutines.launch
 /* TODO
 Bugs:
 - bug rotating app deletes text
-- bug file name cannot include ? and more characters. be sure to regex the title before saving
 - bug content textfield does not match with the divider. text gets cut off before divider
 - bug save hides after saving to file with empty title
 - bug holding erase removed 1 char in front. like delete. Might be how android works. backspaces and deletes over and over when on low battery.

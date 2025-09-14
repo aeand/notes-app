@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import java.io.File
 import java.io.FileInputStream
 
+
 class CustomFile(
     val file: File,
     val tag: String,
@@ -79,6 +80,16 @@ class FileManager(
                 .makeText(applicationContext, "missing title or content", Toast.LENGTH_SHORT)
                 .show()
             return
+        }
+
+        val illegalCharacters: List<String> = mutableListOf("\\", "/", ":", "*", "?", "\"", "<", ">", "|")
+        illegalCharacters.forEach { illegalChar ->
+            if (currentFile.title.value.contains(illegalChar)) {
+                Toast
+                    .makeText(applicationContext, "illegal characters in title", Toast.LENGTH_SHORT)
+                    .show()
+                return
+            }
         }
 
         val letDirectory = File(root, "")

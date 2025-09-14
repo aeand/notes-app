@@ -8,16 +8,17 @@ import androidx.compose.runtime.mutableStateOf
 import java.io.File
 import java.io.FileInputStream
 
-
 class CustomFile(
     val file: File,
     val tag: String,
 )
 
-class FileContent(
-    var title: MutableState<String>,
-    var content: MutableState<String>,
-)
+object SelectedFile {
+    var title: MutableState<String> = mutableStateOf("")
+    var content: MutableState<String> = mutableStateOf("")
+    var originalTitle: String = ""
+    var originalContent: String = ""
+}
 
 class FileManager(
     private val applicationContext: Context
@@ -25,12 +26,6 @@ class FileManager(
     val rootFolderName = "Notes"
     private val root = "/storage/emulated/0/${rootFolderName}"
     var files = mutableStateListOf<CustomFile>()
-    var currentFile = FileContent(
-        mutableStateOf(""),
-        mutableStateOf("")
-    )
-    private var originalTitle: String = ""
-    private var originalContent: String = ""
 
     init {
         getAllFiles()
@@ -51,31 +46,31 @@ class FileManager(
             it.readText()
         }
 
-        currentFile.title.value = file.file.nameWithoutExtension
-        currentFile.content.value = content
-        originalTitle = file.file.nameWithoutExtension
-        originalContent = content
+        SelectedFile.title.value = file.file.nameWithoutExtension
+        SelectedFile.content.value = content
+        SelectedFile.originalTitle = file.file.nameWithoutExtension
+        SelectedFile.originalContent = content
     }
 
     fun resetCurrentFile() {
-        currentFile.title.value = ""
-        currentFile.content.value = ""
-        originalTitle = ""
-        originalContent = ""
+        SelectedFile.title.value = ""
+        SelectedFile.content.value = ""
+        SelectedFile.originalTitle = ""
+        SelectedFile.originalContent = ""
     }
 
     fun fileHasChanges(): Boolean {
-        if (currentFile.title.value.isEmpty() && currentFile.content.value.isEmpty())
+        if (SelectedFile.title.value.isEmpty() && SelectedFile.content.value.isEmpty())
             return false
 
-        if (originalContent.isEmpty() || originalTitle.isEmpty())
+        if (SelectedFile.originalContent.isEmpty() || SelectedFile.originalTitle.isEmpty())
             return true
 
-        return currentFile.title.value != originalTitle || currentFile.content.value != originalContent
+        return SelectedFile.title.value != SelectedFile.originalTitle || SelectedFile.content.value != SelectedFile.originalContent
     }
 
     fun saveCurrentFile() {
-        if (currentFile.title.value.isEmpty()) {
+        if (SelectedFile.title.value.isEmpty()) {
             Toast
                 .makeText(applicationContext, "missing title or content", Toast.LENGTH_SHORT)
                 .show()
@@ -84,7 +79,7 @@ class FileManager(
 
         val illegalCharacters: List<String> = mutableListOf("\\", "/", ":", "*", "?", "\"", "<", ">", "|")
         illegalCharacters.forEach { illegalChar ->
-            if (currentFile.title.value.contains(illegalChar)) {
+            if (SelectedFile.title.value.contains(illegalChar)) {
                 Toast
                     .makeText(applicationContext, "illegal characters in title", Toast.LENGTH_SHORT)
                     .show()
@@ -94,13 +89,13 @@ class FileManager(
 
         val letDirectory = File(root, "")
         letDirectory.mkdirs()
-        val file = File(letDirectory, "${currentFile.title.value}.txt")
-        file.writeText(currentFile.content.value)
+        val file = File(letDirectory, "${SelectedFile.title.value}.txt")
+        file.writeText(SelectedFile.content.value)
 
-        originalTitle = currentFile.title.value
-        originalContent = currentFile.content.value
-        currentFile.title.value = currentFile.title.value
-        currentFile.content.value = currentFile.content.value
+        SelectedFile.originalTitle = SelectedFile.title.value
+        SelectedFile.originalContent = SelectedFile.content.value
+        SelectedFile.title.value = SelectedFile.title.value
+        SelectedFile.content.value = SelectedFile.content.value
 
         Toast.makeText(applicationContext, "file saved", Toast.LENGTH_SHORT).show()
     }
@@ -108,7 +103,7 @@ class FileManager(
     fun deleteFiles(list: List<CustomFile>) {
         list.forEach { file ->
             try {
-                if (file.file.nameWithoutExtension == currentFile.title.value) {
+                if (file.file.nameWithoutExtension == SelectedFile.title.value) {
                     resetCurrentFile()
                 }
                 file.file.delete()

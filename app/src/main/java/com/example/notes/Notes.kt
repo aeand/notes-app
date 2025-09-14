@@ -57,8 +57,8 @@ fun Notes(
             val lineCount = remember { mutableIntStateOf(1) }
             LaunchedEffect(lineCount.intValue) {
                 val extraSpacing = "\n\n\n\n\n\n\n\n\n\n\n"
-                if (lineCount.intValue in 22..27 && !fileManager.currentFile.content.value.endsWith(extraSpacing)) {
-                    fileManager.currentFile.content.value += extraSpacing
+                if (lineCount.intValue in 22..27 && !SelectedFile.content.value.endsWith(extraSpacing)) {
+                    SelectedFile.content.value += extraSpacing
                 }
             }
 
@@ -66,8 +66,8 @@ fun Notes(
                 modifier = Modifier
                     .padding(bottom = 90.dp)
                     .fillMaxSize(),
-                value = fileManager.currentFile.content.value,
-                onValueChange = { it: String -> fileManager.currentFile.content.value = it },
+                value = SelectedFile.content.value,
+                onValueChange = { it: String -> SelectedFile.content.value = it },
                 onTextLayout = { lineCount.intValue = it.lineCount },
                 singleLine = false,
                 maxLines = Int.MAX_VALUE,
@@ -99,7 +99,7 @@ fun Notes(
                             .fillMaxSize()
                             .padding(start = 20.dp, top = 20.dp, end = 20.dp)
                     ) {
-                        if (fileManager.currentFile.content.value.isEmpty()) {
+                        if (SelectedFile.content.value.isEmpty()) {
                             Text(
                                 modifier = Modifier,
                                 text = "Write something",
@@ -137,8 +137,8 @@ fun Notes(
                             .fillMaxWidth(0.7f)
                             .fillMaxHeight()
                             .horizontalScroll(rememberScrollState()),
-                        value = fileManager.currentFile.title.value,
-                        onValueChange = { it: String -> fileManager.currentFile.title.value = it },
+                        value = SelectedFile.title.value,
+                        onValueChange = { it: String -> SelectedFile.title.value = it },
                         singleLine = false,
                         maxLines = 1,
                         visualTransformation = VisualTransformation.None,
@@ -174,7 +174,7 @@ fun Notes(
                                     .fillMaxSize()
                                     .padding(start = 20.dp, end = 20.dp)
                             ) {
-                                if (fileManager.currentFile.title.value.isEmpty()) {
+                                if (SelectedFile.title.value.isEmpty()) {
                                     Text(
                                         modifier = Modifier
                                             .align(Alignment.CenterStart),
@@ -209,10 +209,10 @@ fun Notes(
                         val showSave = remember { mutableStateOf(false) }
 
                         LaunchedEffect(
-                            fileManager.currentFile.title.value,
-                            fileManager.currentFile.content.value
+                            SelectedFile.title.value,
+                            SelectedFile.content.value
                         ) {
-                            if (fileManager.currentFile.content.value.isEmpty() && fileManager.currentFile.title.value.isEmpty())
+                            if (SelectedFile.content.value.isEmpty() && SelectedFile.title.value.isEmpty())
                                 showSave.value = false
                             else
                                 showSave.value = fileManager.fileHasChanges()

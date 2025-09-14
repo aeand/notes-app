@@ -1,6 +1,7 @@
 package com.example.notes
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -132,7 +134,8 @@ fun Notes(
                     BasicTextField(
                         modifier = Modifier
                             .fillMaxWidth(0.7f)
-                            .fillMaxHeight(),
+                            .fillMaxHeight()
+                            .horizontalScroll(rememberScrollState()),
                         value = fileManager.currentFile.title.value,
                         onValueChange = { it: String -> fileManager.currentFile.title.value = it },
                         singleLine = false,

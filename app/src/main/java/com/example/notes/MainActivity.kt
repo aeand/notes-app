@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.toArgb
 /* TODO
 Bugs:
 - bug holding erase removed 1 char in front. like delete. Might be how android works. backspaces and deletes over and over when on low battery.
-- bug close and open new keyboard when clicking new input, with other input focused
 
 Notes:
 - check how Writer Journal handles root folder access and permission requests. Very nice.

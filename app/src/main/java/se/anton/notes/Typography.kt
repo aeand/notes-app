@@ -1,4 +1,4 @@
-package com.example.notes
+package se.anton.notes
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

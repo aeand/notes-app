@@ -1,4 +1,4 @@
-package com.example.notes
+package se.anton.notes
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll

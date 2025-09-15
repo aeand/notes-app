@@ -1,4 +1,4 @@
-package com.example.notes
+package se.anton.notes
 
 import android.content.Context
 import android.widget.Toast

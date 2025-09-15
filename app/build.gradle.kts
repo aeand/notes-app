@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.notes"
+    namespace = "se.anton.notes"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.notes"
+        applicationId = "se.anton.notes"
         minSdk = 33
         targetSdk = 34
         versionCode = 1

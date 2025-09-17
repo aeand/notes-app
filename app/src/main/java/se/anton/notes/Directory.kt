@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -39,6 +40,7 @@ fun Directory(
 ) {
     Box(
         modifier = Modifier
+            .systemBarsPadding()
             .fillMaxSize()
             .background(Color.Transparent)
             .clickable(
@@ -53,7 +55,7 @@ fun Directory(
 
         Box(
             modifier = Modifier
-                .padding(10.dp)
+                .padding(end = 10.dp)
                 .width(200.dp)
                 .fillMaxHeight()
                 .align(Alignment.BottomEnd)

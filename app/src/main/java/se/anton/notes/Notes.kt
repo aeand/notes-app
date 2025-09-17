@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -47,7 +48,11 @@ fun Notes(
     fileManager: FileManager,
     openDir: () -> Unit,
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .systemBarsPadding()
+            .fillMaxSize()
+    ) {
         CompositionLocalProvider(
             LocalTextSelectionColors provides TextSelectionColors(
                 handleColor = Color.Gray,
@@ -64,7 +69,7 @@ fun Notes(
 
             BasicTextField(
                 modifier = Modifier
-                    .padding(bottom = 90.dp)
+                    .padding(bottom = 70.dp)
                     .fillMaxSize(),
                 value = SelectedFile.content.value,
                 onValueChange = { it: String -> SelectedFile.content.value = it },

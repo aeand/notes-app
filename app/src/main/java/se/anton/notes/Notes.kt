@@ -1,5 +1,6 @@
 package se.anton.notes
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
@@ -20,7 +20,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -33,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -44,14 +42,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Notes(
-    fileManager: FileManager,
-    openDir: () -> Unit,
-) {
+fun Notes(fileManager: FileManager) {
     Box(
         modifier = Modifier
             .systemBarsPadding()
             .fillMaxSize()
+            .background(Color.Black)
     ) {
         CompositionLocalProvider(
             LocalTextSelectionColors provides TextSelectionColors(
@@ -226,7 +222,7 @@ fun Notes(
                         if (showSave.value) {
                             Text(
                                 modifier = Modifier
-                                    .padding(end = 10.dp)
+                                    .padding(end = 20.dp)
                                     .clickable {
                                         fileManager.saveCurrentFile()
                                         showSave.value = false
@@ -239,18 +235,6 @@ fun Notes(
                                 lineHeight = Typography.bodyLarge.lineHeight,
                             )
                         }
-
-                        Icon(
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clickable {
-                                    focusManager.clearFocus()
-                                    openDir()
-                                },
-                            painter = painterResource(R.drawable.burger_menu),
-                            contentDescription = null,
-                            tint = Color.White
-                        )
                     }
                 }
             }

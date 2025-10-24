@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -185,7 +186,9 @@ fun Notes(fileManager: FileManager) {
                                         fontSize = Typography.titleMedium.fontSize,
                                         fontWeight = Typography.titleMedium.fontWeight,
                                         lineHeight = Typography.titleMedium.lineHeight,
-                                        color = Color.Gray
+                                        color = Color.Gray,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                 } else {
                                     Box(

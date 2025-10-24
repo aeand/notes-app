@@ -36,6 +36,7 @@ class MainActivity : ComponentActivity() {
                     return@BackHandler
                 }
 
+                fileManager.updateFiles()
                 showDir.value = true
             }
 

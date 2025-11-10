@@ -16,9 +16,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
@@ -119,7 +120,7 @@ fun Directory(fileManager: FileManager, closeDir: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize(),
         ) {
-            OutlinedButton(
+            Button(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(50.dp)
@@ -141,6 +142,7 @@ fun Directory(fileManager: FileManager, closeDir: () -> Unit) {
                 shape = CircleShape,
                 border = BorderStroke(2.dp, Color.White),
                 contentPadding = PaddingValues(0.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
             ) {
                 if (selectedItems.isNotEmpty()) {
                     Icon(

@@ -89,7 +89,12 @@ fun Directory(fileManager: FileManager, closeDir: () -> Unit) {
                                 }
                             },
                             onLongClick = {
-                                selectedItems.add(file.file.path)
+                                if (!selectedItems.contains(file.file.path)) {
+                                    selectedItems.add(file.file.path)
+                                }
+                                else if (selectedItems.contains(file.file.path)) {
+                                    selectedItems.remove(file.file.path)
+                                }
                             },
                         )
                         .background(

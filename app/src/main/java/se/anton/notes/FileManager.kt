@@ -136,6 +136,7 @@ class FileManager(
 
             val tag = if (
                 file.readLines(Charsets.UTF_8).isNotEmpty()
+                && file.readLines(Charsets.UTF_8).first().isNotEmpty()
                 && file.readLines(Charsets.UTF_8)[0].first() == '#'
             )
                 file.readLines(Charsets.UTF_8)[0].replace("#", "").trim().lowercase()

@@ -1,0 +1,98 @@
+[
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-xxxhdpi_ic_launcher_foreground.webp.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-xxxhdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/xml_data_extraction_rules.xml.flat",
+        "source": "se.anton.notes.app-main-44:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/font_roboto_italic.ttf.flat",
+        "source": "se.anton.notes.app-main-44:/font/roboto_italic.ttf"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/xml_backup_rules.xml.flat",
+        "source": "se.anton.notes.app-main-44:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/drawable_bin.png.flat",
+        "source": "se.anton.notes.app-main-44:/drawable/bin.png"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-hdpi_ic_launcher_foreground.webp.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-hdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-xxhdpi_ic_launcher_foreground.webp.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-xxhdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/drawable_plus.png.flat",
+        "source": "se.anton.notes.app-main-44:/drawable/plus.png"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-mdpi_ic_launcher_foreground.webp.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-mdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/font_roboto_regular.ttf.flat",
+        "source": "se.anton.notes.app-main-44:/font/roboto_regular.ttf"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/drawable_logo.png.flat",
+        "source": "se.anton.notes.app-main-44:/drawable/logo.png"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-xhdpi_ic_launcher_foreground.webp.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-xhdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "se.anton.notes.app-debug-42:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "se.anton.notes.app-main-44:/mipmap-xxxhdpi/ic_launcher.webp"
+    }
+]

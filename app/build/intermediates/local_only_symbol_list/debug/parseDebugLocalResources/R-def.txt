@@ -1,0 +1,15 @@
+R_DEF: Internal format may change without notice
+local
+drawable bin
+drawable logo
+drawable plus
+font roboto_italic
+font roboto_regular
+mipmap ic_launcher
+mipmap ic_launcher_foreground
+mipmap ic_launcher_round
+string app_name
+style Theme.Notes
+style Theme.Splash
+xml backup_rules
+xml data_extraction_rules

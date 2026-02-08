@@ -1,0 +1,4 @@
+se.anton.notes.test.app-androidTest-0 G:\Projects\notes-app\app\build\generated\res\resValues\androidTest\debug
+se.anton.notes.test.app-mergeDebugAndroidTestResources-1 G:\Projects\notes-app\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+se.anton.notes.test.app-mergeDebugAndroidTestResources-2 G:\Projects\notes-app\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+se.anton.notes.test.app-debugAndroidTest-3 G:\Projects\notes-app\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources

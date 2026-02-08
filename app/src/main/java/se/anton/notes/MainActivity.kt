@@ -14,6 +14,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 
 /* TODO
+reduce app initial loading time. Splash screen stays up for longer than Spotify
+
+check what is taking a long time
+
+Something weird is going on when selecting text many times.
+Sometimes it doesn't select the word intended but instead every word between the previous cursor position and current clicked word.
+Could have something to do with a glitch/bug that makes my phone freakt it sometimes. it will act as if something is tappoing or dragging witout me touching it. it will stop once i touch it
+
+bug: rotating the screen makes it go back to directory again
+
 what happens if you deny the permissions?
 
 1. Make keyboard take up space. so i don't have to add new lines like this and remove new line functionality and new lines from existing notes
@@ -54,6 +64,7 @@ Performance:
 - reloading dir on delete or navigation is slow enough for me to notice. even without battery saving mode
 - laggy and slow dir on low battery
 - check recompositions
+- https://developer.android.com/topic/performance/app-optimization/enable-app-optimization?utm_source=android-studio-app&utm_medium=app
 */
 
 class MainActivity : ComponentActivity() {
